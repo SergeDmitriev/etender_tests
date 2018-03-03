@@ -3,12 +3,12 @@ from core import config
 from core.browser_wrapper import visit
 
 
-def check_title(self):
+def check_title():
     title = config.browser.title
-    assert title in 'Державні закупівлі'
+    # assert title in 'Державні закупівлі'
 
 
-def fill_login(self, homepage, username, password):
+def fill_login(homepage, username, password):
     visit(homepage+'login')
     time.sleep(3)
     config.browser.find_element_by_id('inputUsername').send_keys(username)

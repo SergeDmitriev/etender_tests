@@ -12,6 +12,8 @@ class TestLoginProzorro(BaseTest):
 
     def test_visit_home(self):
         visit(home)
+
+    def test_check_title(self):
         check_title()
 
     def test_fill_login(self):
