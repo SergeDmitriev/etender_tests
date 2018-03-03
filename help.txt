@@ -1,0 +1,30 @@
+1. install pytest: pip3 install -U pytest
+2. install pip3 install stopit
+
+
+
+
+
+
+
+Notes:
+1. Pytest:
+ - Каждый тест(метод) должен начинаться с test_...
+ - Каждый тестсьют(класс) помечается Test...
+ - Фреймворк скипает классы, в которых есть конструктор
+
+2. Есть три способа закрытия браузера
+- Close() - It is used to close the browser or page currently which is having the focus.
+- Quit() - It is used to shut down the web driver instance or destroy the web driver instance(Close all the windows).
+- Dispose() Closes all browser windows and safely ends the session
+
+3. В теле методов нет неявного присваивания аттрибутам объекта.
+self.x = 1 — присваивает значение 1 аттрибуту объекта.
+x = 1 — присваивает значение 1 локальной переменной (даже если присваивание происходит в методе класса).
+Параметр self подставляется автоматически, когда метод вызывается для объекта. Поэтому, при вызове метода с двумя переменными, ему на самом деле передаётся три.
+
+
+
+
+Links:
+1. Which framework to choose - https://stackoverflow.com/questions/191673/preferred-python-unit-testing-framework
