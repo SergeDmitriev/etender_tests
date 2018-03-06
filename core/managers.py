@@ -13,6 +13,7 @@ class BaseOwnerManager(UserBaseManager):
         UserBaseManager.__init__(self, role, username, password)
 
 
-
+class BaseViewerManager(UserBaseManager):
+    pass
 
 

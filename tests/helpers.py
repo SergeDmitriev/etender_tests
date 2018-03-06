@@ -11,7 +11,7 @@ def check_title(get_title):
 
 def fill_login(homepage, username, password):
     visit(homepage+'login')
-    time.sleep(3)
+    # time.sleep(3)
     config.browser.find_element_by_id('inputUsername').send_keys(username)
     config.browser.find_element_by_id('inputPassword').send_keys(password)
     config.browser.find_element_by_id('btn_submit').click()
