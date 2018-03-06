@@ -5,3 +5,9 @@ homePage = {"Prozorro": "http://40.69.95.23/#/",
 
 users = {"username": "turko",
          "password": "Qq123456"}
+
+project_titles = {"TitleProzorro": "Державні закупівлі",
+          "TitleRialto": "Комерційні торги",
+          "TitleRialtoAuction":"Комерційні торги"}
+
+

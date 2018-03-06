@@ -7,5 +7,5 @@ def visit(url):
 def refresh():
     config.browser.refresh()
 
-def get_url():
-    config.browser.current_url()
+def get_curl():
+    return config.browser.current_url
