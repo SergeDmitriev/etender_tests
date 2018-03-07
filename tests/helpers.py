@@ -26,11 +26,15 @@ def go_to_tender(tender_link):
     time.sleep(4)
     config.browser.find_element_by_css_selector("#collapse-add-docs a").click()
     time.sleep(2)
-    
+
+
     opened_url = get_curl()
     expect = 'http://40.69.95.23/Upload/massAddDocs.pdf'
     print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
     assert opened_url == expect
 
-
-
+def create_owner(username, password):
+    from core.managers import OwnerManager
+    owner = OwnerManager("owner", username, password)
+    print(owner.username, owner.password)
+    return owner
