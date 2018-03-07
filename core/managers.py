@@ -12,19 +12,13 @@ class OwnerManager(UserBaseManager):
     def __init__(self, role, username, password):
         UserBaseManager.__init__(self, role, username, password)
 
-
     def return_spec_page(self):
         pass
 
 
+class ViewerManager(UserBaseManager):
+    def __init__(self, role, username, password):
+        UserBaseManager.__init__(self, role, username, password)
 
-# class BaseViewerManager(UserBaseManager):
-#     def __init__(self, role, username, password):
-#         UserBaseManager.__init__(self, base_role, username, password)
-#
-#     def return_spec_page(self):
-#         pass
-
-
-
-# viewer = BaseViewerManager("viewer", "case7", "Qq123456")
+    def return_spec_page(self):
+        pass

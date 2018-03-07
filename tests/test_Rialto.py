@@ -1,11 +1,11 @@
 from core.browser_wrapper import visit
-from core.etender_data import homePage, users, project_titles
+from core.etender_data import homePage, project_titles, viewer_users
 from tests.base_test import *
 from tests.helpers import check_title, fill_login
 
 home = homePage.get('QA', {}).get('RialtoQA')
-customer_username = users.get("username")
-customer_password = users.get("password")
+customer_username = viewer_users.get("username")
+customer_password = viewer_users.get("password")
 title = project_titles.get("TitleRialto")
 
 

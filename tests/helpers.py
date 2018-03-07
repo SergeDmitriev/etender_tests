@@ -11,7 +11,6 @@ def check_title(get_title):
 
 def fill_login(homepage, username, password):
     visit(homepage+'login')
-    # time.sleep(3)
     config.browser.find_element_by_id('inputUsername').send_keys(username)
     config.browser.find_element_by_id('inputPassword').send_keys(password)
     config.browser.find_element_by_id('btn_submit').click()
@@ -27,14 +26,28 @@ def go_to_tender(tender_link):
     config.browser.find_element_by_css_selector("#collapse-add-docs a").click()
     time.sleep(2)
 
-
     opened_url = get_curl()
     expect = 'http://40.69.95.23/Upload/massAddDocs.pdf'
     print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
     assert opened_url == expect
 
+
+
+def print_to_console_username(login):
+        ("Current user is: ", login)
+
 def create_owner(username, password):
     from core.managers import OwnerManager
     owner = OwnerManager("owner", username, password)
-    print(owner.username, owner.password)
+    print_to_console_username(owner.username)
     return owner
+
+def create_viewer(username, password):
+    from core.managers import ViewerManager
+    viewer = ViewerManager("owner", username, password)
+    print_to_console_username(viewer.username)
+    return viewer
+
+def check_create_from_template_btn():
+    assert get_curl() == 'http://40.69.95.23/#/MyTenders'
+    config.browser.find_element_by_css_selector('a[data-target="#procedureType"]').click()
