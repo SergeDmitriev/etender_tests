@@ -10,3 +10,8 @@ def setup(request):
     config.browser.maximize_window()
     config.browser.implicitly_wait(5)
     config.wait = WebDriverWait(config.browser, config.timeout)
+
+    def teardown():
+        config.browser.quit()
+
+    request.addfinalizer(teardown)

@@ -1,6 +1,6 @@
 import time
 from core import config
-from core.browser_wrapper import visit, get_curl
+from core.browser_wrapper import visit, get_curl, s
 
 
 def check_title(get_title):
@@ -10,10 +10,14 @@ def check_title(get_title):
 
 
 def fill_login(homepage, username, password):
-    visit(homepage+'login')
-    config.browser.find_element_by_id('inputUsername').send_keys(username)
-    config.browser.find_element_by_id('inputPassword').send_keys(password)
-    config.browser.find_element_by_id('btn_submit').click()
+    visit(homepage + 'login')
+    s('#inputUsername').set_value(username)
+    s('#inputPassword').set_value(password)
+    s("btn_submit").click()
+    try:
+        s('#i_got_it').click()  # skip news
+    except:
+        pass
     time.sleep(5)
 
 
@@ -21,9 +25,9 @@ def go_to_tender(tender_link):
     visit(tender_link)
     time.sleep(5)
     # config.browser.find_element_by_id("tenderTitle") == "[ТЕСТУВАННЯ] 2 lot, 2 bids"
-    config.browser.find_element_by_id("naviTitle1").click()
+    s('#naviTitle1').click()
     time.sleep(4)
-    config.browser.find_element_by_css_selector("#collapse-add-docs a").click()
+    s('#collapse-add-docs a').click()
     time.sleep(2)
 
     opened_url = get_curl()
@@ -50,4 +54,11 @@ def create_viewer(username, password):
 
 def check_create_from_template_btn():
     assert get_curl() == 'http://40.69.95.23/#/MyTenders'
-    config.browser.find_element_by_css_selector('a[data-target="#procedureType"]').click()
+    time.sleep(2)
+    s('a[data-target="#myTenderTemplates"]').click()
+    a = config.browser.find_element_by_css_selector('#myTenderTemplates h4.modal-title').text
+    print(a)
+    s('.list-group-item')
+    assert "Оберіть шаблон" in a
+
+
