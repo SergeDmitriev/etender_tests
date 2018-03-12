@@ -4,7 +4,6 @@ from selenium.common.exceptions import StaleElementReferenceException, NoSuchEle
 from selenium.webdriver.support import expected_conditions as EC
 
 
-
 class Condition(object):
 
     def __call__(self, driver):

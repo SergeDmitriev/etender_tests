@@ -1,12 +1,14 @@
 from core.browser_wrapper import visit
-from core.etender_data import homePage, users, project_titles
+from core.etender_data import homePage, project_titles, viewer_users, owner_users
 from tests.base_test import *
-from tests.helpers import check_title, fill_login
+from tests.helpers import check_title, fill_login, create_owner, check_create_from_template_btn
 
-home = homePage.get('QA', {}).get('RialtoAuctionQA')
-customer_username = users.get("username")
-customer_password = users.get("password")
-title = project_titles.get("TitleRialtoAuction")
+home = homePage.get('QA', {}).get('RialtoQA')
+title = project_titles.get("TitleRialto")
+owner_username = owner_users.get("username")
+owner_password = owner_users.get("password")
+viewer_username = viewer_users.get("username")
+viewer_password = viewer_users.get("password")
 
 
 class TestLoginRialtoAuction(BaseTest):
@@ -19,3 +21,6 @@ class TestLoginRialtoAuction(BaseTest):
 
     def test_fill_login(self):
         fill_login(home, customer_username, customer_password)
+
+    def test_can_create_from_template(self):
+        check_create_from_template_btn()

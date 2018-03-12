@@ -1,7 +1,7 @@
 from core.browser_wrapper import visit
 from core.etender_data import homePage, project_titles, viewer_users, owner_users
 from tests.base_test import *
-from tests.helpers import check_title, fill_login, go_to_tender, create_owner, check_create_from_template_btn
+from tests.helpers import check_title, fill_login, create_owner, check_create_from_template_btn
 
 home = homePage.get('QA', {}).get('ProzorroQA')
 title = project_titles.get("TitleProzorro")
@@ -17,8 +17,6 @@ class TestLoginProzorro(BaseOwnerTest):
 
     def test_visit_home(self):
         visit(home)
-
-    def test_check_title(self):
         check_title(title)
 
     def test_fill_login(self):
@@ -27,13 +25,8 @@ class TestLoginProzorro(BaseOwnerTest):
     def test_can_create_from_template(self):
         check_create_from_template_btn()
 
-
-
-
     # def test_go_to_tender(self):
     #     go_to_tender("http://40.69.95.23/#/tenderDetailes/765d89c8494844f2a9420d70845d7fa3")
-
-
 
 
 

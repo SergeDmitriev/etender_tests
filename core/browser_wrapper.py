@@ -14,6 +14,9 @@ def refresh():
 def get_curl():
     return config.browser.current_url
 
+def get_title():
+    return config.browser.title
+
 
 def close():
     config.browser.close()
