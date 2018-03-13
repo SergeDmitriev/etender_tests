@@ -14,8 +14,13 @@ def refresh():
 def get_curl():
     return config.browser.current_url
 
+
 def get_title():
     return config.browser.title
+
+
+def get_source():
+    return config.browser.page_source
 
 
 def close():
@@ -35,7 +40,7 @@ def until_not(locator, condition):
     return locator
 
 
-def wait_ui():
+def wait_blockUI():
     # TODO: refactor
     until_not(s('.blockUI'), present)
 
@@ -48,4 +53,6 @@ def until(locator, condition):
 def scroll_to_bottom():
     config.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-
+def send_javascript_click(element):
+    javascript_command = str("javascript:document.getElementById('{0}').click();").format(element)
+    config.browser.execute_script(javascript_command)

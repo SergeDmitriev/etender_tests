@@ -1,7 +1,7 @@
 from core.browser_wrapper import visit
 from core.etender_data import homePage, project_titles, viewer_users, owner_users
 from tests.base_test import *
-from tests.helpers import check_title, fill_login, create_owner, check_create_from_template_btn
+from tests.helpers import check_title, fill_login, check_create_from_template_btn
 
 home = homePage.get('QA', {}).get('RialtoQA')
 title = project_titles.get("TitleRialto")

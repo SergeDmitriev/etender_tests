@@ -1,5 +1,5 @@
 1. install pytest: pip3 install -U pytest
-2. install pip3 install stopit
+2. pip3 install selenium
 
 
 
