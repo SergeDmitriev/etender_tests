@@ -1,2 +1,8 @@
 /.idea/*
 /tests/.cache/*
+/__pycache__/conftest.cpython-27-PYTEST.pyc
+/core/__pycache__/browser_wrapper.cpython-36.pyc
+/core/__pycache__/conditions.cpython-36.pyc
+/core/__pycache__/config.cpython-36.pyc
+/core/__pycache__/elements.cpython-36.pyc
+/core/__pycache__/etender_data.cpython-36.pyc

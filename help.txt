@@ -1,5 +1,7 @@
 1. install pytest: pip3 install -U pytest
 2. pip3 install selenium
+3.
+
 
 
 
@@ -23,6 +25,8 @@ self.x = 1 — присваивает значение 1 аттрибуту об
 x = 1 — присваивает значение 1 локальной переменной (даже если присваивание происходит в методе класса).
 Параметр self подставляется автоматически, когда метод вызывается для объекта. Поэтому, при вызове метода с двумя переменными, ему на самом деле передаётся три.
 
+4. Сгенерить 500 строк, длинной 32 символа
+for i in range(300): print('\''+''.join([random.choice(list('123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM')) for x in range(32)]) + '\'' + '\n')
 
 CSS selectors:
 1.
