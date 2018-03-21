@@ -1,4 +1,4 @@
 browser = None
 wait = None
-timeout = 10
+timeout = 5
 

@@ -1,6 +1,9 @@
 import pytest
-from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, send_javascript_click, refresh, get_source
-from core.conditions import text
+import time
+
+from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, send_javascript_click, refresh, \
+    get_source, ss, scroll_to, check_exist, get_attr_value
+from core.conditions import text, clickable
 from core.etender_data import user_roles
 
 
@@ -15,9 +18,6 @@ class BaseOwnerTest(BaseTest):
 
 class BaseViewerTest(BaseTest):
     pass
-
-
-
 
 
 class BaseTestLogic(object):
@@ -56,6 +56,24 @@ class BaseTestLogic(object):
         assert get_curl() == self._home_page + 'MyTenders'
         s('a[data-target="#myTenderTemplates"]').click()
         s('#myTenderTemplates h4.modal-title').assure(text, "Оберіть шаблон")
+
+    def go_to_tender(self, tender_link):
+        visit(tender_link)
+        wait_blockUI()
+        s('#naviTitle1').click()
+        # s('#collapse-add-docs a').click()
+        # opened_url = get_curl()
+        # expect = 'http://40.69.95.23/Upload/massAddDocs.pdf'
+        # print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
+        # assert opened_url == expect
+
+    def click_first_tender_for_add_to_favorite(self):
+        visit(self._home_page)
+        wait_blockUI()
+        s('tr:nth-child(1) > td.favorite-td').click()
+        scroll_to('down_few')
+        get_attr_value('1tr:nth-child(1)>td.favorite-td > span > i', 'class')
+
 
     def add_tender_to_favorite(self):
         wait_blockUI()

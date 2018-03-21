@@ -1,9 +1,11 @@
-homePage = {'QA': {'ProzorroQA':'http://40.69.95.23/#/',
+homePage = {'QA': {'ProzorroQA':'http://52.164.252.138/#/',
                    'RialtoQA': 'http://rialto.qa.e-tender.ua/#/',
-                   'RialtoAuctionQA': 'http://rialtoauction.qa.e-tender.ua/#/'},
+                   'RialtoAuctionQA': 'http://rialtoauction.qa.e-tender.ua/#/',
+                   'RialtoClosedQA': 'http://rialtoclosed.qa.e-tender.ua/#/'},
             'UAT':{'ProzorroUAT':'http://bid.uat.e-tender.biz/#/',
                    'RialtoUAT':None,
-                   'RialtoAuctionUAT':'http://rialtoauction.uat.e-tender.ua/#/'}}
+                   'RialtoAuctionUAT':'http://rialtoauction.uat.e-tender.ua/#/',
+                   'RialtoClosedUAT': None}}
 
 user_roles = {'owner': 'owner',
               'viewer1': 'viewer1',
@@ -37,8 +39,7 @@ class BaseProjectData(object):
 
 class ProzorroData(BaseProjectData):
 
-    def __init__(self):
-        pass
+
 
     home = homePage.get('UAT', {}).get('ProzorroUAT')
     title = project_titles.get('TitleProzorro')

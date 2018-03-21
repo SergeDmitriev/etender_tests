@@ -1,9 +1,9 @@
 from core.etender_data import RialtoAuctionData, user_roles
 from tests.base_test_logic import *
-from tests.helpers import go_to_tender, add_tender_to_favorite, check_bidButton_for_anonym
+from tests.helpers import check_bidButton_for_anonym
 
 
-class TestLoginRialtoAuction(BaseTest):
+class TestLoginRialtoAuctionOwner(BaseTest):
 
     d = BaseTestLogic(RialtoAuctionData)
     user = user_roles.get('owner')
@@ -19,7 +19,7 @@ class TestLoginRialtoAuction(BaseTest):
         self.d.check_create_from_template_btn()
 
 
-class TestLoginRialtoViewer(BaseViewerTest):
+class TestLoginRialtoAuctionViewer(BaseViewerTest):
 
     d = BaseTestLogic(RialtoAuctionData)
     user = user_roles.get('viewer1')
@@ -30,5 +30,8 @@ class TestLoginRialtoViewer(BaseViewerTest):
     def test_fill_login(self):
         self.d.fill_login(self.user)
 
+    def test_go_to_tender(self):
+        self.d.go_to_tender('')
+
     def test_add_tender_to_favorite(self):
-        add_tender_to_favorite()
+        self.d.add_tender_to_favorite()
