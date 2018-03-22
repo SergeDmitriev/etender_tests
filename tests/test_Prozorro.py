@@ -16,7 +16,7 @@ class TestLoginProzorroOwner(BaseOwnerTest):
         self.d.fill_login(self.user)
 
     def test_click_first_tender_for_add_to_favorite(self):
-        self.d.click_first_tender_for_add_to_favorite()
+        self.d.add_tender_to_favorite_from_tenderTable()
 
     # def test_can_create_from_template(self):
     #     self.d.check_create_from_template_btn()

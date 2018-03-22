@@ -1,3 +1,5 @@
+import sys
+
 from core import config
 from core.elements import SmartElement, SmartElementsCollection
 from core.conditions import present
@@ -31,11 +33,23 @@ def close():
 def get_attr_value(element, attribute_name):
     try:
         attribute_value = s(element).get_attribute(attribute_name)
-        print('Element.Attribute.Value is : ', attribute_value)
+        print('Element.Attribute.Value is : ', attribute_value + '\n')
         return attribute_value
     except:
-        print('Method get_attr_value: some exception was thrown!')
+        print_exception()
         return None
+
+def print_exception():
+    import traceback
+    print('{0}: Next exception was ignored:'.format(whoami()))
+    traceback.format_exception_only()
+    print('{0}: End exception message'.format(whoami()))
+
+
+def whoami():
+    import sys
+    return sys._getframe(2).f_code.co_name
+    #2 - callersname
 
 
 #SmartElements:

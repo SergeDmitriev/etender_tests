@@ -1,10 +1,12 @@
+from random import randint
 import pytest
 import time
 
 from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, send_javascript_click, refresh, \
-    get_source, ss, scroll_to, check_exist, get_attr_value
-from core.conditions import text, clickable
+    get_source, scroll_to, get_attr_value
+from core.conditions import text
 from core.etender_data import user_roles
+from tests import temp_test_data
 
 
 @pytest.mark.usefixtures("setup")
@@ -33,7 +35,7 @@ class BaseTestLogic(object):
         expected_title = self._data.title
         actual_title = get_title()
         assert actual_title == expected_title
-        print('Method check_title: Actual result: {0};  Expected: {1}'.format(actual_title, expected_title))
+        print('\nMethod check_title: Actual result: {0};  Expected: {1}'.format(actual_title, expected_title))
 
     def fill_login(self, user):
         if user == user_roles.get('owner'):
@@ -67,12 +69,25 @@ class BaseTestLogic(object):
         # print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
         # assert opened_url == expect
 
-    def click_first_tender_for_add_to_favorite(self):
+    def add_tender_to_favorite_from_tenderTable(self):
         visit(self._home_page)
         wait_blockUI()
+        favorite = get_attr_value('tr:nth-child(1)>td.favorite-td>span>i', 'class')
+        get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
+
         s('tr:nth-child(1) > td.favorite-td').click()
-        scroll_to('down_few')
-        get_attr_value('1tr:nth-child(1)>td.favorite-td > span > i', 'class')
+        s('div.toast-message').assure(text, "Додано до обраного")
+
+        # if favorite == 'opacity1':
+        #     s('tr:nth-child(1) > td.favorite-td').click()
+        #     scroll_to('down_few')
+        #
+        # elif favorite == '':
+        #     s('tr:nth-child(1) > td.favorite-td').click()
+        #     scroll_to('down_few')
+
+        time.sleep(5)
+
 
 
     def add_tender_to_favorite(self):
