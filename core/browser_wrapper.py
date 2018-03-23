@@ -1,5 +1,3 @@
-import sys
-
 from core import config
 from core.elements import SmartElement, SmartElementsCollection
 from core.conditions import present
@@ -39,11 +37,10 @@ def get_attr_value(element, attribute_name):
         print_exception()
         return None
 
+
 def print_exception():
     import traceback
-    print('{0}: Next exception was ignored:'.format(whoami()))
-    traceback.format_exception_only()
-    print('{0}: End exception message'.format(whoami()))
+    traceback.print_exc()
 
 
 def whoami():
