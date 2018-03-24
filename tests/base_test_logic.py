@@ -73,19 +73,19 @@ class BaseTestLogic(object):
         visit(self._home_page)
         wait_blockUI()
         favorite = get_attr_value('tr:nth-child(1)>td.favorite-td span i', 'class')
-        #get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
 
-        if favorite is None:
-            print('Tender was not in favorite')
-            s('tr:nth-child(1) > td.favorite-td').click()
-            scroll_to('down_few')
-            s('div[class=\'toast toast-success\'] > div.toast-message').assure(text, "Додано до обраного")
-
-        elif favorite == 'opacity1':
+        if favorite == 'opacity1':
             print('Tender was in favorite')
             s('tr:nth-child(1) > td.favorite-td').click()
             scroll_to('down_few')
             s('div[class=\'toast toast-info\'] > div.toast-message').assure(text, "Видалено з обраного")
+
+        print('Tender was not in favorite')
+        s('tr:nth-child(1) > td.favorite-td').click()
+        scroll_to('down_few')
+        s('div[class=\'toast toast-success\'] > div.toast-message').assure(text, "Додано до обраного")
+
+    # get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
 
     def add_tender_to_favorite(self):
         wait_blockUI()
