@@ -3,7 +3,7 @@ import pytest
 import time
 
 from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, send_javascript_click, refresh, \
-    get_source, scroll_to, get_attr_value
+    get_source, scroll_to, get_attr_value, get_javascript_cur_page
 from core.conditions import text
 from core.etender_data import user_roles
 from tests import temp_test_data
@@ -55,9 +55,11 @@ class BaseTestLogic(object):
             pass
 
     def check_create_from_template_btn(self):
-        assert get_curl() == self._home_page + 'MyTenders'
+        visit(self._home_page + 'MyTenders')
+        wait_blockUI()
         s('a[data-target="#myTenderTemplates"]').click()
         s('#myTenderTemplates h4.modal-title').assure(text, "Оберіть шаблон")
+
 
     def go_to_tender(self, tender_link):
         visit(tender_link)
@@ -85,7 +87,19 @@ class BaseTestLogic(object):
         scroll_to('down_few')
         s('div[class=\'toast toast-success\'] > div.toast-message').assure(text, "Додано до обраного")
 
-    # get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
+        # go to Обрані закупівлі
+        get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
+        s('a[id="qa_choosedTenders"]').click()
+
+
+
+
+
+
+
+
+
+
 
     def add_tender_to_favorite(self):
         wait_blockUI()

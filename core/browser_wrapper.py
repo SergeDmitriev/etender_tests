@@ -103,3 +103,5 @@ def scroll_to(pos='down'):
     else:
         config.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
+# def get_javascript_cur_page():
+#     return config.browser.execute_script("return window.location;")
