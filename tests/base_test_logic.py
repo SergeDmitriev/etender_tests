@@ -1,13 +1,11 @@
-from random import randint
 import pytest
-import time
-
+import re
 from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, send_javascript_click, refresh, \
-    get_source, scroll_to, get_attr_value, get_javascript_cur_page
+    get_source, scroll_to, get_attr_value
 from core.conditions import text
 from core.etender_data import user_roles
-from tests import temp_test_data
-
+from tests.temp_test_data import TempTestData
+import time
 
 @pytest.mark.usefixtures("setup")
 class BaseTest(object):
@@ -22,11 +20,16 @@ class BaseViewerTest(BaseTest):
     pass
 
 
+class BaseAnonymTest(BaseTest):
+    pass
+
+
 class BaseTestLogic(object):
 
     def __init__(self, data):
         self._data = data
         self._home_page = self._data.home
+        self.temp_data = TempTestData()
 
     def visit_home(self):
         visit(self._home_page)
@@ -54,11 +57,39 @@ class BaseTestLogic(object):
         except:
             pass
 
+
     def check_create_from_template_btn(self):
         visit(self._home_page + 'MyTenders')
         wait_blockUI()
         s('a[data-target="#myTenderTemplates"]').click()
         s('#myTenderTemplates h4.modal-title').assure(text, "Оберіть шаблон")
+
+
+    def add_tender_to_favorite_from_tenderTable(self):
+        visit(self._home_page)
+        wait_blockUI()
+        favorite = get_attr_value('tr:nth-child(1)>td.favorite-td span i', 'class')
+
+        if favorite == 'opacity1':
+            print('Tender was already in favorite')
+            s('tr:nth-child(1) > td.favorite-td').click()
+            scroll_to('down_few')
+            s('div[class=\'toast toast-info\'] > div.toast-message').assure(text, "Видалено з обраного")
+
+        s('tr:nth-child(1) > td.favorite-td').click()
+        scroll_to('down_few')
+        s('div[class=\'toast toast-success\'] > div.toast-message').assure(text, "Додано до обраного")
+        self.temp_data.favorite_tender_title = get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
+        self.temp_data.favorite_tender_tender_id = re.search('(?=UA)(.*)(?=\xa0\xa0Дата)',
+                                                             get_attr_value('tr:nth-child(1)>td.title-td.ng-binding',
+                                                                            'innerText', True))[0]
+        # go to Обрані закупівлі
+        s('a[id="qa_choosedTenders"]').click()
+        assert self.temp_data.favorite_tender_title in get_source()
+        del self.temp_data
+
+    def add_tender_to_favorite_from_tenderDetailes(self):
+        pass
 
 
     def go_to_tender(self, tender_link):
@@ -70,35 +101,6 @@ class BaseTestLogic(object):
         # expect = 'http://40.69.95.23/Upload/massAddDocs.pdf'
         # print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
         # assert opened_url == expect
-
-    def add_tender_to_favorite_from_tenderTable(self):
-        visit(self._home_page)
-        wait_blockUI()
-        favorite = get_attr_value('tr:nth-child(1)>td.favorite-td span i', 'class')
-
-        if favorite == 'opacity1':
-            print('Tender was in favorite')
-            s('tr:nth-child(1) > td.favorite-td').click()
-            scroll_to('down_few')
-            s('div[class=\'toast toast-info\'] > div.toast-message').assure(text, "Видалено з обраного")
-
-        print('Tender was not in favorite')
-        s('tr:nth-child(1) > td.favorite-td').click()
-        scroll_to('down_few')
-        s('div[class=\'toast toast-success\'] > div.toast-message').assure(text, "Додано до обраного")
-
-        # go to Обрані закупівлі
-        get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
-        s('a[id="qa_choosedTenders"]').click()
-
-
-
-
-
-
-
-
-
 
 
     def add_tender_to_favorite(self):

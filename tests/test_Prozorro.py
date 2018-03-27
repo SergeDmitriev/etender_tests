@@ -3,7 +3,7 @@ from tests.base_test_logic import *
 from tests.helpers import check_bidButton_for_anonym
 
 
-class TestLoginProzorroOwner(BaseOwnerTest):
+class TestProzorroOwner(BaseOwnerTest):
 
     d = BaseTestLogic(ProzorroData)
     user = user_roles.get('owner')
@@ -15,14 +15,11 @@ class TestLoginProzorroOwner(BaseOwnerTest):
     def test_fill_login(self):
         self.d.fill_login(self.user)
 
-    def test_click_first_tender_for_add_to_favorite(self):
-        self.d.add_tender_to_favorite_from_tenderTable()
-
     def test_can_create_from_template(self):
         self.d.check_create_from_template_btn()
 
 
-class TestLoginProzorroViewer(BaseViewerTest):
+class TestProzorroViewer(BaseViewerTest):
 
     d = BaseTestLogic(ProzorroData)
     user = user_roles.get('viewer1')
@@ -33,10 +30,11 @@ class TestLoginProzorroViewer(BaseViewerTest):
     def test_fill_login(self):
         self.d.fill_login(self.user)
 
+    def test_add_tender_to_favorite_from_tenderTable(self):
+        self.d.add_tender_to_favorite_from_tenderTable()
 
-
-
-
+    def test_add_tender_to_favorite_from_tenderDetailes(self):
+        self.d.add_tender_to_favorite_from_tenderDetailes()
 
 
     # def test_go_to_tender(self):

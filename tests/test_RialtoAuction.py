@@ -3,7 +3,7 @@ from tests.base_test_logic import *
 from tests.helpers import check_bidButton_for_anonym
 
 
-class TestLoginRialtoAuctionOwner(BaseTest):
+class TestRialtoAuctionOwner(BaseTest):
 
     d = BaseTestLogic(RialtoAuctionData)
     user = user_roles.get('owner')
@@ -22,7 +22,7 @@ class TestLoginRialtoAuctionOwner(BaseTest):
     #     self.d.check_create_from_template_btn()
 
 
-class TestLoginRialtoAuctionViewer(BaseViewerTest):
+class TestRialtoAuctionViewer(BaseViewerTest):
 
     d = BaseTestLogic(RialtoAuctionData)
     user = user_roles.get('viewer1')

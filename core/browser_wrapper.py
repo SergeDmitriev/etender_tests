@@ -1,3 +1,4 @@
+from selenium.webdriver.common.alert import Alert
 from core import config
 from core.elements import SmartElement, SmartElementsCollection
 from core.conditions import present
@@ -28,10 +29,11 @@ def close():
     config.browser.close()
 
 
-def get_attr_value(element, attribute_name):
+def get_attr_value(element, attribute_name, print_attr=False):
     try:
         attribute_value = s(element).get_attribute(attribute_name)
-        print('Element.Attribute.Value is : ', attribute_value + '\n')
+        if print_attr == True:
+            print('Element.Attribute.Value is : ', attribute_value + '\n')
         return attribute_value
     except:
         print_exception()
@@ -81,7 +83,6 @@ def check_exist(css_selector):
     return None
 
 
-
 #JavaScript commands:
 def send_javascript_click(element):
     javascript_command = str("javascript:document.getElementById('{0}').click();").format(element)
@@ -102,6 +103,20 @@ def scroll_to(pos='down'):
         config.browser.execute_script("window.scrollBy(0,-10)")
     else:
         config.browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+
+# def handle_alert(key):
+#     alert_text = Alert(config.browser)
+#     if key == 'accept':
+#         print('Alert text captured: ', alert_text)
+#         Alert(config.browser).accept()
+#     elif key == 'dismiss':
+#         print('Alert text captured: ', alert_text)
+#         Alert(config.browser).dismiss()
+#     else:
+#         print('Alert text captured: ', alert_text)
+#         return alert_text
+
 
 # def get_javascript_cur_page():
 #     return config.browser.execute_script("return window.location;")
