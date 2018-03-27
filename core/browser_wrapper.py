@@ -7,6 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 #Base commands:
 def visit(url):
     config.browser.get(url)
+    wait_blockUI()
 
 
 def refresh():

@@ -1,6 +1,6 @@
 import pytest
 import re
-from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, send_javascript_click, refresh, \
+from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, \
     get_source, scroll_to, get_attr_value
 from core.conditions import text
 from core.etender_data import user_roles
@@ -84,12 +84,25 @@ class BaseTestLogic(object):
                                                              get_attr_value('tr:nth-child(1)>td.title-td.ng-binding',
                                                                             'innerText', True))[0]
         # go to Обрані закупівлі
+        tender = get_attr_value('tr:nth-child(1)>td.title-td.ng-binding > p > a', 'text')
+        print(tender)
         s('a[id="qa_choosedTenders"]').click()
         assert self.temp_data.favorite_tender_title in get_source()
         del self.temp_data
 
+
     def add_tender_to_favorite_from_tenderDetailes(self):
         pass
+
+#Anonym functionality
+    def check_bidButton_for_anonym(self):
+        wait_blockUI()
+        scroll_to('down_few')
+        s('a[class=\'dropdown-toggle fl cp\']').click()
+        # s('a .bidButton-fixed cp ng-scope').assure(clickable).click()
+        # assert get_curl() == home + 'register'
+
+
 
 
     def go_to_tender(self, tender_link):
@@ -101,18 +114,3 @@ class BaseTestLogic(object):
         # expect = 'http://40.69.95.23/Upload/massAddDocs.pdf'
         # print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
         # assert opened_url == expect
-
-
-    def add_tender_to_favorite(self):
-        wait_blockUI()
-        send_javascript_click('addFavorite')
-        s('div.toast-message').assure(text, "Додано до обраного")
-        tender_title = s('#tenderTitle').text
-        tender_id = s('#tenderidua > b').text
-        print("Tender title: {0}, TenderId: {1}".format(tender_title, tender_id))
-        s('#qa_choosedTenders').click()
-        print(str(get_curl()))
-        refresh()
-        print(str(get_source()))
-        assert tender_title, tender_id in get_source()
-        # TODO: add assure for '# Видалено з обраного'

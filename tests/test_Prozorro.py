@@ -1,6 +1,5 @@
-from core.etender_data import ProzorroData, user_roles
+from core.etender_data import ProzorroData
 from tests.base_test_logic import *
-from tests.helpers import check_bidButton_for_anonym
 
 
 class TestProzorroOwner(BaseOwnerTest):
@@ -36,13 +35,19 @@ class TestProzorroViewer(BaseViewerTest):
     def test_add_tender_to_favorite_from_tenderDetailes(self):
         self.d.add_tender_to_favorite_from_tenderDetailes()
 
-
     # def test_go_to_tender(self):
     #     self.d.go_to_tender("http://40.69.95.23/#/tenderDetailes/48881cb3582e4049b5e2db33f931fd03")
 
-    # def test_add_tender_to_favorite(self):
-    #     self.d.add_tender_to_favorite()
 
 
-    # def test_check_bidButton_for_anonym(self):
-    #     check_bidButton_for_anonym(home)
+
+class TestProzorroAnonym(BaseAnonymTest):
+
+    d = BaseTestLogic(ProzorroData)
+    user = user_roles.get('anonym')
+
+    def test_visit_home(self):
+        self.d.visit_home()
+
+    def test_check_bid_btn_for_anonym(self):
+        self.d.check_bidButton_for_anonym()
