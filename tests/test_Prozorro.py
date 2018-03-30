@@ -29,16 +29,14 @@ class TestProzorroViewer(BaseViewerTest):
     def test_fill_login(self):
         self.d.fill_login(self.user)
 
-    def test_add_tender_to_favorite_from_tenderTable(self):
-        self.d.add_tender_to_favorite_from_tenderTable()
+    # def test_add_tender_to_favorite_from_tenderTable(self):
+    #     self.d.add_tender_to_favorite_from_tenderTable()
 
     def test_add_tender_to_favorite_from_tenderDetailes(self):
         self.d.add_tender_to_favorite_from_tenderDetailes()
 
     # def test_go_to_tender(self):
     #     self.d.go_to_tender("http://40.69.95.23/#/tenderDetailes/48881cb3582e4049b5e2db33f931fd03")
-
-
 
 
 class TestProzorroAnonym(BaseAnonymTest):

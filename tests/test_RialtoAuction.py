@@ -35,3 +35,15 @@ class TestRialtoAuctionViewer(BaseViewerTest):
 
     def test_add_tender_to_favorite_from_tenderDetailes(self):
         self.d.add_tender_to_favorite_from_tenderDetailes()
+
+
+class TestRialtoAuctionAnonym(BaseAnonymTest):
+
+    d = BaseTestLogic(RialtoAuctionData)
+    user = user_roles.get('anonym')
+
+    def test_visit_home(self):
+        self.d.visit_home()
+
+    def test_check_bid_btn_for_anonym(self):
+        self.d.check_bidButton_for_anonym()

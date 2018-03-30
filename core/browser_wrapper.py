@@ -12,6 +12,7 @@ def visit(url):
 
 def refresh():
     config.browser.refresh()
+    wait_blockUI()
 
 
 def get_curl():
@@ -119,5 +120,5 @@ def scroll_to(pos='down'):
 #         return alert_text
 
 
-# def get_javascript_cur_page():
-#     return config.browser.execute_script("return window.location;")
+def get_javascript_cur_page():
+    return config.browser.execute_script("return window.location.href;")

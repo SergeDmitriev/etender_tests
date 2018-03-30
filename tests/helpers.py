@@ -1,7 +1,6 @@
 from core.browser_wrapper import visit, get_curl, s
-from core.conditions import clickable
 
-#unnecessary implementationS
+# unnecessary implementationS
 # def print_to_console_username(login):
 #         ("Current user is: ", login)
 #
@@ -16,4 +15,4 @@ from core.conditions import clickable
 #     viewer = ViewerManager("owner", username, password)
 #     print_to_console_username(viewer.username)
 #     return viewer
-
+#

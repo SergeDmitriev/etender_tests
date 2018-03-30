@@ -1,8 +1,8 @@
 import pytest
 import re
 from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, \
-    get_source, scroll_to, get_attr_value
-from core.conditions import text
+    get_source, scroll_to, get_attr_value, send_javascript_click, get_javascript_cur_page, refresh
+from core.conditions import text, clickable
 from core.etender_data import user_roles
 from tests.temp_test_data import TempTestData
 import time
@@ -88,28 +88,44 @@ class BaseTestLogic(object):
         print(tender)
         s('a[id="qa_choosedTenders"]').click()
         assert self.temp_data.favorite_tender_title in get_source()
-        del self.temp_data
-
 
     def add_tender_to_favorite_from_tenderDetailes(self):
-        pass
+        visit(self._home_page)
+        refresh()
+        s('tr:nth-child(1) > td.title-td.ng-binding > p > a').click()
+        print('Method add_tender_to_favorite_from_tenderDetailes: TenderURL: ', get_javascript_cur_page())
+        favorite = get_attr_value('span[class=\'favorite favorite-max\'] > i[id="addFavorite"]', 'class')
+
+        if favorite == 'opacity1':
+            print('Tender was already in favorite')
+            s('span[class=\'favorite favorite-max\'] > i[id="addFavorite"]').assure(clickable).click()
+            scroll_to('down_few')
+            s('div[class=\'toast toast-info\'] > div.toast-message').assure(text, "Видалено з обраного")
+
+        s('span[class=\'favorite favorite-max\'] > i[id="addFavorite"]').assure(clickable).click()
+        scroll_to('down_few')
+        s('div[class=\'toast toast-success\'] > div.toast-message').assure(text, "Додано до обраного")
+        self.temp_data.favorite_tender_title = get_attr_value('h1[id=\'tenderTitle\']', 'text')
+        self.temp_data.favorite_tender_tender_id = re.search('(?=UA)(.*)(?=\xa0\xa0Дата)',
+                                                             get_attr_value('span > b',
+                                                                            'innerText', True))[0]
+
 
 #Anonym functionality
     def check_bidButton_for_anonym(self):
         wait_blockUI()
-        scroll_to('down_few')
-        s('a[class=\'dropdown-toggle fl cp\']').click()
-        # s('a .bidButton-fixed cp ng-scope').assure(clickable).click()
-        # assert get_curl() == home + 'register'
-
-
-
-
-    def go_to_tender(self, tender_link):
-        visit(tender_link)
+        s('tr:nth-child(1) > td.title-td.ng-binding > p > a').click()
         wait_blockUI()
-        s('#naviTitle1').click()
-        # s('#collapse-add-docs a').click()
+        print('Method bidButton_for_anonym. TenderURL: ', get_javascript_cur_page())
+        s('a[class=\'bidButton-fixed cp ng-scope\'').click()
+        self.temp_data.anonym_tender_bidBtn = get_javascript_cur_page()
+        assert self.temp_data.anonym_tender_bidBtn == self._home_page + 'register'
+
+    # def go_to_tender(self, tender_link):
+    #     visit(tender_link)
+    #     wait_blockUI()
+    #     s('#naviTitle1').click()
+    #     # s('#collapse-add-docs a').click()
         # opened_url = get_curl()
         # expect = 'http://40.69.95.23/Upload/massAddDocs.pdf'
         # print("Method go_to_tender: Actual result:{0};  Expected: {1}".format(opened_url, expect))
