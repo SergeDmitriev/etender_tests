@@ -33,7 +33,7 @@ def close():
 
 def get_attr_value(element, attribute_name, print_attr=False):
     try:
-        attribute_value = s(element).get_attribute(attribute_name)
+        attribute_value = s(element).assure(present).get_attribute(attribute_name)
         if print_attr == True:
             print('Element.Attribute.Value is : ', attribute_value + '\n')
         return attribute_value

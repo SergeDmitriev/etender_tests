@@ -1,4 +1,4 @@
-homePage = {'QA': {'ProzorroQA':'http://52.164.252.138/#/',
+homePage = {'QA': {'ProzorroQA':'http://52.138.214.244/#/',
                    'RialtoQA': 'http://rialto.qa.e-tender.ua/#/',
                    'RialtoAuctionQA': 'http://rialtoauction.qa.e-tender.ua/#/',
                    'RialtoClosedQA': 'http://rialtoclosed.qa.e-tender.ua/#/'},
@@ -42,7 +42,7 @@ class ProzorroData(BaseProjectData):
 
 
 
-    home = homePage.get('UAT', {}).get('ProzorroUAT')
+    home = homePage.get('QA', {}).get('ProzorroQA')
     title = project_titles.get('TitleProzorro')
     owner_username = owner_users.get('username')
     owner_password = owner_users.get('password')
