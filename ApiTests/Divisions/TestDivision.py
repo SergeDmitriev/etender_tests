@@ -27,7 +27,7 @@ class Division(BaseApiTestLogic):
         """Checks, if division in list of dict"""
         # TODO: what to do, if there lots of Divisions?
         body = json.dumps({"": ''})
-        assert division_obj in json.loads(cls.get_division(body)).get('result').get('items')
+        assert division_obj not in json.loads(cls.get_division(body)).get('result').get('items')
 
 
 class CreateDivision(Division):
@@ -59,6 +59,7 @@ class DeleteDivision(Division):
 
     @classmethod
     def delete_division(cls, division):
+        """:returns: dict id, title"""
         request = post(url=cls.base_url + 'api/services/etender/division/DeleteDivision',
                        headers=cls.set_headers(),
                        data = json.dumps({"id": division.get('id')}))
@@ -106,17 +107,10 @@ class TestUpdateDivision(UpdateDivision):
 class TestDeleteDivision(DeleteDivision):
 
     def test_delete_division(self):
+        division_before_deletion = self.division
         self.delete_division(self.division)
-        print(self.delete_division(self.division))
-
-    def test_assert_division_not_in_list(self):
-        # TODO: remove hardcoded and make parametrize
-        old_existing_division = {'id': 39, 'title': 'Develop Department'}
-        self.assert_division_exist(old_existing_division)
+        self.assert_division_not_exist(division_before_deletion)
 
 
 if __name__ == '__main__':
     pass
-
-
-
