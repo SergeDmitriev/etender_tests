@@ -38,5 +38,10 @@ CSS selectors:
 1.
 
 
+Pytest fixtures:
+- scope='class', result will be (print(each word)): SetUP a b teardown
+- scope='function'(default), result will be (print(each word)): SetUP a teardown SetUP b teardown
+
+
 Links:
 1. Which framework to choose - https://stackoverflow.com/questions/191673/preferred-python-unit-testing-framework
