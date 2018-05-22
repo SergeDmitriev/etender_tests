@@ -1,69 +1,6 @@
 import json
-import pytest
-from requests import post
-from ApiTests.BaseApiTestLogic import BaseApiTestLogic
-
-
-class Division(BaseApiTestLogic):
-    division = None
-
-    @classmethod
-    def get_division(cls, body):
-        """:returns bytes"""
-        request = post(url=cls.base_url + 'api/services/etender/division/GetDivisions',
-                       headers=cls.set_headers(),
-                       data=body)
-        return request.content
-
-    @classmethod
-    def assert_division_exist(cls, division_obj):
-        """Checks, if division in list of dict"""
-        # TODO: what to do, if there lots of Divisions?
-        body = json.dumps({"": ''})
-        assert division_obj in json.loads(cls.get_division(body)).get('result').get('items')
-
-    @classmethod
-    def assert_division_not_exist(cls, division_obj):
-        """Checks, if division in list of dict"""
-        # TODO: what to do, if there lots of Divisions?
-        body = json.dumps({"": ''})
-        assert division_obj not in json.loads(cls.get_division(body)).get('result').get('items')
-
-
-class CreateDivision(Division):
-
-    @classmethod
-    def create_division(cls, division_title):
-        """: create obj in Division as dict of (id, title)"""
-        request = post(url=cls.base_url + 'api/services/etender/division/CreateDivision',
-                       headers=cls.set_headers(),
-                       data=json.dumps({"title": division_title}))
-        Division.division = json.loads(request.content).get('result')
-        print('Created division:', Division.division)
-
-
-class UpdateDivision(Division):
-
-    @classmethod
-    def update_division(cls, division, new_title_name):
-        print('Before update:', division)
-        request = post(url=cls.base_url + 'api/services/etender/division/UpdateDivision',
-                       headers=cls.set_headers(),
-                       data = json.dumps({"id": division.get('id'), "title": new_title_name}))
-        Division.division = json.loads(request.content).get('result')
-        print('After update:', Division.division)
-        return json.loads(request.content)
-
-
-class DeleteDivision(Division):
-
-    @classmethod
-    def delete_division(cls, division):
-        """:returns: dict id, title"""
-        request = post(url=cls.base_url + 'api/services/etender/division/DeleteDivision',
-                       headers=cls.set_headers(),
-                       data = json.dumps({"id": division.get('id')}))
-        return request.content
+from ApiTests.Divisions.Division import Division, CreateDivision, UpdateDivision, DeleteDivision, \
+    AddUserToDivision
 
 
 class TestGetDivisions(Division):
@@ -85,7 +22,7 @@ class TestGetDivisions(Division):
 
     def test_assert_division_in_list(self):
         # TODO: remove hardcoded and make parametrize
-        old_existing_division = {'id': 39, 'title': 'Develop Department'}
+        old_existing_division = {'id': 38, 'title': 'QA Department'}
         self.assert_division_exist(old_existing_division)
 
 
@@ -110,6 +47,37 @@ class TestDeleteDivision(DeleteDivision):
         division_before_deletion = self.division
         self.delete_division(self.division)
         self.assert_division_not_exist(division_before_deletion)
+
+
+
+class TestAddUserToDivision(AddUserToDivision):
+
+
+    def AddUserToDivision(self):
+        temp_division = CreateDivision.precondition_create_division('Division created for joining user').get('id')
+        print('created obj', temp_division)
+        self.add(1248, temp_division)
+        # get list of divisions
+
+
+    def test_no_such_division(self):
+        self.add()
+
+    def test_no_such_user(self):
+        pass
+
+    def test_user_already_in_division(self):
+        pass
+
+    def test_division_not_in_organization(self):
+        pass
+
+    def test_user_not_in_organization(self):
+        pass
+
+
+
+
 
 
 if __name__ == '__main__':

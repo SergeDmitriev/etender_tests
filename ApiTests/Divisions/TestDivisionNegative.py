@@ -24,7 +24,7 @@ class TestDeleteDivisionNegative(DeleteDivision):
 
     def test_delete_not_existing_division(self):
         # TODO: remove hardcoded and make parametrize
-        old_existing_division = {'id': 39, 'title': 'Develop Department'}
+        old_existing_division = {'id': 38, 'title': 'QA Department'}
         request = self.delete_division(old_existing_division)
         assert json.loads(request).get('error').get('message') == 'Division is not in your organization'
         self.assert_division_not_exist(old_existing_division)
