@@ -1,6 +1,3 @@
-base_prozorro_url = 'http://52.138.214.244/'
-
-
 class DivisionUsersOrganization(object):
     _division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com'}
     _division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com'}

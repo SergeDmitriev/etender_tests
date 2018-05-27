@@ -1,14 +1,19 @@
 from requests import post
-from ApiTests.etender_data_api import base_prozorro_url
+
 
 
 ### Functional block for fixtures ###
 # TODO: guess its a bad way
+from core.etender_data import homePage
+
+def get_prozorro_home_page_function():
+    """cut /# from url"""
+    return homePage.get('QA', {}).get('ProzorroQA')[:-2]
+
 def get_cookies_function():
-    request = post(url=base_prozorro_url + 'Account/Login',
+    request = post(url=get_prozorro_home_page_function() + 'Account/Login',
                    data={"UsernameOrEmailAddress": "divisionAdmin@division.com",
-                         "Password": "Qq123456",
-                         "returnUrl": "#/MyTenders"})
+                         "Password": "Qq123456"})
     return request.headers['Set-Cookie']
 
 def set_headers_function():
@@ -19,15 +24,17 @@ def set_headers_function():
 
 ### OOP block for test ###
 class BaseApiTestLogic(object):
-    base_url = base_prozorro_url
+    base_url = get_prozorro_home_page_function()
 
-    @classmethod
-    def get_cookies(cls):
+    def get_cookies(self):
         return get_cookies_function()
 
-    @classmethod
-    def set_headers(cls):
+    def set_headers(self):
         return set_headers_function()
 
     def set_headers1(self):
-        BaseApiTestLogic.get_cookies()
+        BaseApiTestLogic.get_cookies(self)
+
+
+if __name__ == "__main__":
+    pass
