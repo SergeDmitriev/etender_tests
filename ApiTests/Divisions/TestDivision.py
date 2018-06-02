@@ -1,9 +1,9 @@
 import json
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
-from ApiTests.Divisions.Division import Division
+from ApiTests.Divisions.Division import Division, DivisionUsersInOrganization
 
 
-class TestDivisions(BaseApiTestLogic):
+class TestDivisionCRUD(BaseApiTestLogic):
 
     division = Division()
 
@@ -41,13 +41,66 @@ class TestDivisions(BaseApiTestLogic):
         self.division.assert_division_not_exist(division_before_deletion)
 
 
-    # def AddUserToDivision(self):
-    #     temp_division = CreateDivision.precondition_create_division('Division created for joining user').get('id')
-    #     print('created obj', temp_division)
-    #     self.add(1248, temp_division)
-    #     # get list of divisions
-    #
-    #
+
+class TestAddToDivision(BaseApiTestLogic):
+
+    division_users = DivisionUsersInOrganization()
+
+    def test_add_user_to_division(self):
+        """Positive case, if chain already exists - drop it firs"""
+
+        user_id = DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId')
+        division = DivisionUsersInOrganization().get_first_division()
+        print('Input data:', user_id, division)
+
+
+        for item in self.division_users.get_divisions_with_users().get('result').get('items'):
+            if item.get('id') != None:
+                if 'users' in item and item.get('users') != []:
+                    print('result', item)
+
+                    print('item.get(users)', item.get('users'))
+                    if division.get('id') in item.get('users'): #and item.get('users').get('id') == user_id:
+                        print('True')
+
+        # self.division_users.user_division_chain = self.division_users.add_user_to_division(
+        #     DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+        #     DivisionUsersInOrganization().get_first_division())
+
+        # print(self.division_users.get_divisions_with_users())
+
+        # if self.division_users.user_division_chain.get('result') == None \
+        #         and self.division_users.user_division_chain.get('error').get('message') == \
+        #         'User in this division already exist':
+        #     self.division_users.delete_user_from_division(
+        #         DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+        #         DivisionUsersInOrganization().get_first_division())
+        #     self.division_users.user_division_chain = self.division_users.add_user_to_division(
+        #         DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+        #         DivisionUsersInOrganization().get_first_division())
+
+
+
+        # print('result: ', self.division_users.user_division_chain.get('result'))
+        #TODO: add get_chains
+
+    def test_delete_user_from_organization(self):
+        request = self.division_users.delete_user_from_division(
+            DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+            DivisionUsersInOrganization().get_first_division())
+
+    def test_delete_negative(self):
+        pass
+
+
+    # def test_no_such_division(self, add_user_to_division_parametrized):
+    #     print('user: ', add_user_to_division_parametrized.get('userId'))
+    #     print(add_user_to_division_parametrized.get('divisionId'))
+    #     res = self.division_users.add_user_to_division(add_user_to_division_parametrized.get('userId'),
+    #                                              add_user_to_division_parametrized.get('divisionId'))
+    #     print('got: ', res)
+
+
     # def test_no_such_division(self):
     #     self.add()
     #
