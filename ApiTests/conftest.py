@@ -3,6 +3,7 @@ from ApiTests.Divisions.Division import Division
 from ApiTests.etender_data_api import update_division_test_data, \
     add_user_to_division_data
 
+"""pt.test request - это некий объект, с помощью которого мы взаимодействуем с фикстурами"""
 
 @pytest.fixture
 def create_division_obj():

@@ -7,11 +7,12 @@ class Division(BaseApiTestLogic):
 
     division_for_end_to_end = None
     user_division_chain = None
+    headers = BaseApiTestLogic.set_headers()
 
     def get_division(self, body):
         """:returns bytes"""
         request = post(url=self.base_url + 'api/services/etender/division/GetDivisions',
-                       headers=self.set_headers(),
+                       headers=self.headers,
                        data=body)
         return request.content
 
@@ -30,7 +31,7 @@ class Division(BaseApiTestLogic):
     def create_division(self, division_title):
         """ create obj in Division as dict of (id, title)"""
         request = post(url=self.base_url + 'api/services/etender/division/CreateDivision',
-                       headers=self.set_headers(),
+                       headers=self.headers,
                        data=json.dumps({"title": division_title}))
         self.division = json.loads(request.content).get('result')
         print('Created division:', self.division)
@@ -39,7 +40,7 @@ class Division(BaseApiTestLogic):
     def update_division(self, division, new_title_name):
         print('Before update:', division)
         request = post(url=self.base_url + 'api/services/etender/division/UpdateDivision',
-                       headers=self.set_headers(),
+                       headers=self.headers,
                        data = json.dumps({"id": division.get('id'), "title": new_title_name}))
         self.division = json.loads(request.content).get('result')
         print('After update:', self.division)
@@ -48,27 +49,27 @@ class Division(BaseApiTestLogic):
     def delete_division(self, division):
         """:returns: dict id, title"""
         request = post(url=self.base_url + 'api/services/etender/division/DeleteDivision',
-                       headers=self.set_headers(),
+                       headers=self.headers,
                        data = json.dumps({"id": division.get('id')}))
         return request.content
 
     def add_user_to_division(self, user_id, division):
         request = post(url=self.base_url + 'api/services/etender/division/AddUserToDivision',
-                              headers=self.set_headers(),
+                              headers=self.headers,
                               data=json.dumps({"userId": user_id, "divisionId": division.get('id')}))
         print('Adding result: ',json.loads(request.content))
         return json.loads(request.content)
 
     def delete_user_from_division(self, user_id, division):
         request = post(url=self.base_url + 'api/services/etender/division/RemoveUserFromDivision',
-                       headers=self.set_headers(),
+                       headers=self.headers,
                        data=json.dumps({"userId": user_id, "divisionId": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
         return json.loads(request.content)
 
     def get_divisions_with_users(self, body=json.dumps({"": ''})):
         request = post(url=self.base_url + 'api/services/etender/division/GetDivisionsWithUsers',
-                       headers=self.set_headers(),
+                       headers=self.headers,
                        data=body)
         return json.loads(request.content)
 
@@ -87,10 +88,16 @@ class DivisionUsersInOrganization(Division):
         self._division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com'}
         self._unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com'}
 
+
     def get_first_division(self):
         """:returns first division from current organization in dict"""
         body = json.dumps({"": ''})
         return json.loads(self.get_division(body)).get('result').get('items')[0]
 
 
+if __name__ == '__main':
+    pass
+    # d = Division()
+    # b = body = json.dumps({"": ''})
+    # d.get_division(b)
 

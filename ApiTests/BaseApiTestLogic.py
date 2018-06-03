@@ -29,8 +29,10 @@ class BaseApiTestLogic(object):
     def get_cookies(self):
         return get_cookies_function()
 
-    def set_headers(self):
-        return set_headers_function()
+    @staticmethod
+    def set_headers():
+        headers = set_headers_function()
+        return headers
 
 
 if __name__ == "__main__":

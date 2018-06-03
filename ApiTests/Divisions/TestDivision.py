@@ -8,8 +8,7 @@ class TestDivisionCRUD(BaseApiTestLogic):
     division = Division()
 
     def test_get_cookies(self):
-        print(self.get_cookies())
-        assert self.get_cookies().startswith('ASP.NET_SessionId=')
+        assert self.division.headers.get('Cookie').startswith('ASP.NET_SessionId=')
 
     def test_get_all_divisions(self):
         """send request with empty JSON data"""
@@ -51,17 +50,17 @@ class TestAddToDivision(BaseApiTestLogic):
 
         user_id = DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId')
         division = DivisionUsersInOrganization().get_first_division()
-        print('Input data:', user_id, division)
+        print('\nInput data:', user_id, division)
 
-
-        for item in self.division_users.get_divisions_with_users().get('result').get('items'):
-            if item.get('id') != None:
-                if 'users' in item and item.get('users') != []:
-                    print('result', item)
-
-                    print('item.get(users)', item.get('users'))
-                    if division.get('id') in item.get('users'): #and item.get('users').get('id') == user_id:
-                        print('True')
+        print('My data:', self.division_users.get_divisions_with_users())
+        # for item in self.division_users.get_divisions_with_users().get('result').get('items'):
+        #     if item.get('id') != None:
+        #         if 'users' in item and item.get('users') != []:
+        #             print('result', item)
+        #
+        #             print('item.get(users)', item.get('users'))
+        #             if division.get('id') in item.get('users'): #and item.get('users').get('id') == user_id:
+        #                 print('True')
 
         # self.division_users.user_division_chain = self.division_users.add_user_to_division(
         #     DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
