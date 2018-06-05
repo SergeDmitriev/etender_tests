@@ -47,26 +47,25 @@ class TestAddToDivision(BaseApiTestLogic):
 
     def test_add_user_to_division(self):
         """Positive case, if chain already exists - drop it firs"""
+        user_division_chain = {'user_id': DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+                     'division': DivisionUsersInOrganization().get_first_division().get('id')}
 
-        user_id = DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId')
-        division = DivisionUsersInOrganization().get_first_division()
-        print('\nInput data:', user_id, division)
 
-        print('My data:', self.division_users.get_divisions_with_users())
-        # for item in self.division_users.get_divisions_with_users().get('result').get('items'):
-        #     if item.get('id') != None:
-        #         if 'users' in item and item.get('users') != []:
-        #             print('result', item)
-        #
-        #             print('item.get(users)', item.get('users'))
-        #             if division.get('id') in item.get('users'): #and item.get('users').get('id') == user_id:
-        #                 print('True')
+        print('\nInput data:', user_division_chain)
+        print('see what: ',self.division_users.get_user_division_chain())
+
+
+
+
 
         # self.division_users.user_division_chain = self.division_users.add_user_to_division(
         #     DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
         #     DivisionUsersInOrganization().get_first_division())
 
-        # print(self.division_users.get_divisions_with_users())
+        # self.division_users.user_division_chain = self.division_users.add_user_to_division(
+        #     DivisionUsersInOrganization()._division_head_of_dep_two.get('UserId'),
+        #     DivisionUsersInOrganization().get_first_division())
+
 
         # if self.division_users.user_division_chain.get('result') == None \
         #         and self.division_users.user_division_chain.get('error').get('message') == \

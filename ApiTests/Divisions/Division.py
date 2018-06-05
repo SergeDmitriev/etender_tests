@@ -6,7 +6,6 @@ from ApiTests.BaseApiTestLogic import BaseApiTestLogic, set_headers_function
 class Division(BaseApiTestLogic):
 
     division_for_end_to_end = None
-    user_division_chain = None
     headers = BaseApiTestLogic.set_headers()
 
     def get_division(self, body):
@@ -73,6 +72,27 @@ class Division(BaseApiTestLogic):
                        data=body)
         return json.loads(request.content)
 
+    def get_user_division_chain(self):
+        """:returns list of dict with keys userid, divisionid"""
+        obj = self.get_divisions_with_users()
+        one_chain = {}
+        users_in_divisions = []
+
+        if obj.get('success') and obj.get('error') is None:
+            for item in obj.get('result').get('items'):     #item - дивижн с вложенными юзерами
+                if item.get('users') != [] and item.get('id') is not None:
+                    try:
+                        for i in item.get('users'):
+                            one_chain['userid'] = i.get('id')
+                            one_chain['divisionid'] = item.get('id')
+                            users_in_divisions.append({'userid': i.get('id'), 'divisionid': item.get('id')})
+                            # users_in_divisions.append(one_chain)
+                    except Exception as e:
+                        print(e)
+        return users_in_divisions
+
+
+
 
 class DivisionUsersInOrganization(Division):
 
@@ -95,9 +115,9 @@ class DivisionUsersInOrganization(Division):
         return json.loads(self.get_division(body)).get('result').get('items')[0]
 
 
+    def get_users_in_division(self):
+        pass
+
+
 if __name__ == '__main':
     pass
-    # d = Division()
-    # b = body = json.dumps({"": ''})
-    # d.get_division(b)
-
