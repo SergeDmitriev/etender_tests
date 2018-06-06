@@ -91,7 +91,19 @@ class Division(BaseApiTestLogic):
                         print(e)
         return users_in_divisions
 
+    def check_if_chain_exist(self, userid_divisionid):
+        user_division_chain = userid_divisionid
+        list_of_chains = self.get_user_division_chain()
+        res = False
 
+        try:
+            # Check, if our chain already exists
+            assert user_division_chain in list_of_chains
+            res = True
+        except AssertionError as e:
+            print('User not in chain')
+        finally:
+            return res
 
 
 class DivisionUsersInOrganization(Division):
@@ -107,7 +119,6 @@ class DivisionUsersInOrganization(Division):
         self._division_manager_three = {'UserId': '1254', 'Email': 'divisionManagerThree@division.com'}
         self._division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com'}
         self._unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com'}
-
 
     def get_first_division(self):
         """:returns first division from current organization in dict"""

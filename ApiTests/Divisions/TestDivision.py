@@ -22,7 +22,7 @@ class TestDivisionCRUD(BaseApiTestLogic):
 
     def test_assert_some_division_in_list(self):
         # TODO: remove hardcoded and make parametrize
-        old_existing_division = {'id': 38, 'title': 'QA Department'}
+        old_existing_division = {'id': 40, 'title': 'Support Department'}
         self.division.assert_division_exist(old_existing_division)
 
     def test_create_division(self):
@@ -44,51 +44,42 @@ class TestDivisionCRUD(BaseApiTestLogic):
 class TestAddToDivision(BaseApiTestLogic):
 
     division_users = DivisionUsersInOrganization()
+    user_division_chain_data = {'userid': int(DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId')),
+                                'divisionid': DivisionUsersInOrganization().get_first_division().get('id')}
+    chain_exists = division_users.check_if_chain_exist(user_division_chain_data)
 
     def test_add_user_to_division(self):
         """Positive case, if chain already exists - drop it firs"""
-        user_division_chain = {'user_id': DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
-                     'division': DivisionUsersInOrganization().get_first_division().get('id')}
 
+        if self.chain_exists:
+            # Delete user_division chain from DB
+            self.division_users.delete_user_from_division(
+                    DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+                    DivisionUsersInOrganization().get_first_division())
+            assert self.division_users.check_if_chain_exist(self.user_division_chain_data) is False
 
-        print('\nInput data:', user_division_chain)
-        print('see what: ',self.division_users.get_user_division_chain())
-
-
-
-
-
-        # self.division_users.user_division_chain = self.division_users.add_user_to_division(
-        #     DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
-        #     DivisionUsersInOrganization().get_first_division())
-
-        # self.division_users.user_division_chain = self.division_users.add_user_to_division(
-        #     DivisionUsersInOrganization()._division_head_of_dep_two.get('UserId'),
-        #     DivisionUsersInOrganization().get_first_division())
-
-
-        # if self.division_users.user_division_chain.get('result') == None \
-        #         and self.division_users.user_division_chain.get('error').get('message') == \
-        #         'User in this division already exist':
-        #     self.division_users.delete_user_from_division(
-        #         DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
-        #         DivisionUsersInOrganization().get_first_division())
-        #     self.division_users.user_division_chain = self.division_users.add_user_to_division(
-        #         DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
-        #         DivisionUsersInOrganization().get_first_division())
-
-
-
-        # print('result: ', self.division_users.user_division_chain.get('result'))
-        #TODO: add get_chains
-
-    def test_delete_user_from_organization(self):
-        request = self.division_users.delete_user_from_division(
+        self.division_users.user_division_chain = self.division_users.add_user_to_division(
             DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
             DivisionUsersInOrganization().get_first_division())
+        assert self.division_users.check_if_chain_exist(self.user_division_chain_data)
 
-    def test_delete_negative(self):
-        pass
+    def test_delete_user_from_division(self):
+        if not self.chain_exists:
+            # Add user:
+            self.division_users.user_division_chain = self.division_users.add_user_to_division(
+                DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+                DivisionUsersInOrganization().get_first_division())
+            assert self.division_users.check_if_chain_exist(self.user_division_chain_data)
+
+        self.division_users.delete_user_from_division(
+            DivisionUsersInOrganization()._division_head_of_dep_one.get('UserId'),
+            DivisionUsersInOrganization().get_first_division())
+        assert self.division_users.check_if_chain_exist(self.user_division_chain_data) is False
+
+
+
+    # def test_delete_negative(self):
+    #     pass
 
 
     # def test_no_such_division(self, add_user_to_division_parametrized):
