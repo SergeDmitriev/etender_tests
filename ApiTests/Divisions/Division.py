@@ -126,6 +126,13 @@ class DivisionUsersInOrganization(Division):
         return json.loads(self.get_division(body)).get('result').get('items')[0]
 
 
+    def group_user_and_division(self, userId, divisionId):
+        # Sample: {'userid': 1248, 'divisionid': 40}
+        chain = {
+            'userid': int(userId),
+            'divisionid': divisionId}
+        return chain
+
     def get_users_in_division(self):
         pass
 
