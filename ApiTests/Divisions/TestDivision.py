@@ -1,6 +1,6 @@
 import json
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
-from ApiTests.Divisions.Division import Division, DivisionUsersInOrganization
+from ApiTests.Divisions.Division import Division, DivisionUserChain
 
 
 class TestDivisionCRUD(BaseApiTestLogic):
@@ -42,11 +42,11 @@ class TestDivisionCRUD(BaseApiTestLogic):
 
 class TestAddToDivision(BaseApiTestLogic):
     # TODO: add preconditions
-    chains = DivisionUsersInOrganization()
+    chains = DivisionUserChain()
 
-    user_div = chains.group_user_and_division(
-        chains._division_head_of_dep_one.get('UserId'),
-        chains.get_first_division().get('id'))
+    user_div = chains.group_user_and_division_into_chain(
+        user=chains._division_head_of_dep_one,
+        division=chains.get_first_division())
 
     def test_add_user_to_division(self):
         """Positive case, if chain already exists - drop it firs"""
@@ -58,8 +58,9 @@ class TestAddToDivision(BaseApiTestLogic):
             assert self.chains.check_if_chain_exist(self.user_div) is False
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
-            self.chains._division_head_of_dep_one.get('UserId'),
-            self.chains.get_first_division())
+            user=self.chains._division_head_of_dep_one,
+            division=self.chains.get_first_division())
+        print('my data res',self.chains.user_division_chain)
         assert self.chains.check_if_chain_exist(self.user_div)
 
     def test_add_nonexistent_user_to_division(self):
@@ -67,8 +68,8 @@ class TestAddToDivision(BaseApiTestLogic):
         user_to_add = {'UserId': '0', 'Email': 'nonexistentUser@division.com'}
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
-            user_to_add.get('UserId'),
-            self.chains.get_first_division())
+            user=user_to_add,
+            division=self.chains.get_first_division())
 
         assert user_to_add not in all_chains and \
                self.chains.user_division_chain.get('error').get('message') \
@@ -80,9 +81,12 @@ class TestAddToDivision(BaseApiTestLogic):
         nonexistent_division = {'id': 0, 'title': 'Nonexistent division'}
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
-            user_to_add.get('UserId'), nonexistent_division)
+            user=user_to_add,
+            division=nonexistent_division)
 
-        assert self.chains.group_user_and_division(user_to_add.get('UserId'), nonexistent_division) \
+        assert self.chains.group_user_and_division_into_chain(
+            user=user_to_add,
+            division=nonexistent_division) \
                not in all_chains and \
                'Підрозділ не в вашій організації' == \
                self.chains.user_division_chain.get('error').get('message')
@@ -90,13 +94,13 @@ class TestAddToDivision(BaseApiTestLogic):
     def test_add_user_if_chain_exists(self):
         if not self.chains.check_if_chain_exist(self.user_div):
             self.chains.user_division_chain = self.chains.add_user_to_division(
-                self.chains._division_head_of_dep_one.get('UserId'),
-                self.chains.get_first_division())
+                user=self.chains._division_head_of_dep_one,
+                division=self.chains.get_first_division())
             assert self.chains.check_if_chain_exist(self.user_div)
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
-            self.chains._division_head_of_dep_one.get('UserId'),
-            self.chains.get_first_division())
+            user=self.chains._division_head_of_dep_one,
+            division=self.chains.get_first_division())
 
         assert 'User in this division already exist' == \
                self.chains.user_division_chain.get('error').get('message')
@@ -113,9 +117,11 @@ class TestAddToDivision(BaseApiTestLogic):
         foreign_division = {'id': 35, 'title': 'test'}
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
-            user_to_add.get('UserId'), foreign_division)
+            user=user_to_add,
+            division=foreign_division)
 
-        assert self.chains.group_user_and_division(user_to_add.get('UserId'), foreign_division) \
+        assert self.chains.group_user_and_division_into_chain(
+            user=user_to_add, division=foreign_division) \
                not in all_chains and \
                'Підрозділ не в вашій організації' == self.chains.user_division_chain.get('error').get('message')
 
@@ -126,7 +132,8 @@ class TestAddToDivision(BaseApiTestLogic):
         division = self.chains.get_first_division()
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
-            user_to_add.get('UserId'), division)
+            user=user_to_add,
+            division=division)
 
         assert 'You in different organization with user try to add' == \
                self.chains.user_division_chain.get('error').get('message')
@@ -134,40 +141,100 @@ class TestAddToDivision(BaseApiTestLogic):
 
 
 class TestDeleteFromDivision(BaseApiTestLogic):
-    # TODO: add preconditions
-    chains = DivisionUsersInOrganization()
-
-    user_div = chains.group_user_and_division(
-        chains._division_head_of_dep_one.get('UserId'),
-        chains.get_first_division().get('id'))
+    # TODO: add preconditions, maybe parametrize
+    chains = DivisionUserChain()
 
     def test_delete_user_from_division(self):
-        if not self.chains.check_if_chain_exist(self.user_div):
+        user_div = self.chains.group_user_and_division_into_chain(
+            user=self.chains._division_head_of_dep_one,
+            division=self.chains.get_first_division())
+
+        # TODO: make precondition "if chain not exist - create it"
+        if not self.chains.check_if_chain_exist(user_div):
             # Add user:
             self.chains.user_division_chain = self.chains.add_user_to_division(
-                self.chains._division_head_of_dep_one.get('UserId'),
-                self.chains.get_first_division())
-            assert self.chains.check_if_chain_exist(self.user_div)
+                user=self.chains._division_head_of_dep_one,
+                division=self.chains.get_first_division())
+            assert self.chains.check_if_chain_exist(user_div)
 
         self.chains.delete_user_from_division(
             self.chains._division_head_of_dep_one.get('UserId'),
             self.chains.get_first_division())
-        assert self.chains.check_if_chain_exist(self.user_div) is False
+        assert self.chains.check_if_chain_exist(user_div) is False
 
     def test_delete_user_from_nonexistent_division(self):
-        pass
+
+        nonexistent_division = {'id': 0, 'title': 'Nonexistent division'}
+
+        chain = self.chains.group_user_and_division_into_chain(
+            user=self.chains._division_head_of_dep_one,
+            division=nonexistent_division)
+
+        result = self.chains.delete_user_from_division(
+            self.chains._division_head_of_dep_one.get('UserId'),
+            nonexistent_division)
+
+        assert self.chains.check_if_chain_exist(chain) is False
+        assert 'Підрозділ не в вашій організації' == result.get('error').get('message')
 
     def test_delete_nonexistent_user_from_division(self):
-        pass
+        # TODO: test fails now
+        user_to_delete = {'UserId': '0', 'Email': 'nonexistentUser@division.com'}
+
+        chain = self.chains.group_user_and_division_into_chain(
+            user=user_to_delete,
+            division=self.chains.get_first_division())
+
+        result = self.chains.delete_user_from_division(
+            user_to_delete.get('UserId'),
+            self.chains.get_first_division())
+
+        assert self.chains.check_if_chain_exist(chain) is False
+        assert 'Підрозділ не в вашій організації' == result.get('error').get('message')
 
     def test_delete_nonexistent_chain(self):
-        pass
+        user_to_delete = {'UserId': '0', 'Email': 'nonexistentUser@division.com'}
+        nonexistent_division = {'id': 0, 'title': 'Nonexistent division'}
+
+        chain = self.chains.group_user_and_division_into_chain(
+            user=user_to_delete,
+            division=nonexistent_division)
+
+        result = self.chains.delete_user_from_division(
+            user_to_delete.get('UserId'),
+            nonexistent_division)
+
+        assert self.chains.check_if_chain_exist(chain) is False
+        assert 'Підрозділ не в вашій організації' == result.get('error').get('message')
 
     def test_delete_user_from_foreign_division(self):
-        pass
+        user_to_delete = {'UserId': '0', 'Email': 'nonexistentUser@division.com'}
+        foreign_division = {'id': 35, 'title': 'test'}
+
+        chain = self.chains.group_user_and_division_into_chain(
+            user=self.chains._division_head_of_dep_one,
+            division=foreign_division)
+
+        result = self.chains.delete_user_from_division(
+            user_to_delete.get('UserId'),
+            foreign_division)
+
+        assert self.chains.check_if_chain_exist(chain) is False
+        assert 'Підрозділ не в вашій організації' == result.get('error').get('message')
 
     def test_delete_foreign_user_from_division(self):
-        pass
+        user_to_delete = {'UserId': '235', 'Email': 'turkobubro@meta.ua'}
+
+        chain = self.chains.group_user_and_division_into_chain(
+            user=self.chains._division_head_of_dep_one,
+            division=self.chains.get_first_division())
+
+        result = self.chains.delete_user_from_division(
+            user_to_delete.get('UserId'),
+            self.chains.get_first_division())
+
+        assert self.chains.check_if_chain_exist(chain) is False
+        assert 'Підрозділ не в вашій організації' == result.get('error').get('message')
 
 if __name__ == '__main__':
     pass
