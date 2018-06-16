@@ -52,19 +52,58 @@ class Division(BaseApiTestLogic):
                        data = json.dumps({"id": division.get('id')}))
         return request.content
 
-    def add_user_to_division(self, user_id, division):
+    def add_user_to_division(self, **kwargs):
+        """ TODO: use **kwargs instead id"""
         request = post(url=self.base_url + 'api/services/etender/division/AddUserToDivision',
                               headers=self.headers,
-                              data=json.dumps({"userId": user_id, "divisionId": division.get('id')}))
+                              data=json.dumps({'userId': kwargs.get('user').get('UserId'),
+                                               'divisionId': kwargs.get('division').get('id')}))
         print('Adding result: ',json.loads(request.content))
         return json.loads(request.content)
 
     def delete_user_from_division(self, user_id, division):
+        """ TODO: use **kwargs instead id"""
         request = post(url=self.base_url + 'api/services/etender/division/RemoveUserFromDivision',
                        headers=self.headers,
                        data=json.dumps({"userId": user_id, "divisionId": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
         return json.loads(request.content)
+
+
+class DivisionUserChain(Division):
+
+    def __init__(self):
+        self._division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com'}
+        self._division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com'}
+        self._division_head_of_dep_two = {'UserId': '1249', 'Email': 'divisionHeadOfDepTwo@division.com'}
+        self._division_head_of_deps_one = {'UserId': '1250', 'Email': 'divisionHeadOfDepsOne@division.com'}
+        self._division_head_of_deps_two = {'UserId': '1251', 'Email': 'divisionHeadOfDepsTwo@division.com'}
+        self._division_manager_one = {'UserId': '1252', 'Email': 'divisionManagerOne@division.com'}
+        self._division_manager_two = {'UserId': '1253', 'Email': 'divisionManagerTwo@division.com'}
+        self._division_manager_three = {'UserId': '1254', 'Email': 'divisionManagerThree@division.com'}
+        self._division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com'}
+        self._unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com'}
+
+
+    def get_first_division(self):
+        """:returns first division from current organization in dict
+        sample: {'id': 40, 'title': 'Support Department'}"""
+        body = json.dumps({"": ''})
+        return json.loads(self.get_division(body)).get('result').get('items')[0]
+
+    # def group_user_and_division(self, userId, divisionId):
+    #     """Sample: {'userid': 1248, 'divisionid': 40}"""
+    #     chain = {
+    #         'userid': int(userId),
+    #         'divisionid': divisionId}
+    #     return chain
+
+    def group_user_and_division_into_chain(self, **kwargs):
+        """input data: user=, division="""
+        chain = {'userid': int(kwargs.get('user').get('UserId')),
+                'divisionid': kwargs.get('division').get('id')}
+        print('Chain is: ', chain)
+        return chain
 
     def get_divisions_with_users(self, body=json.dumps({"": ''})):
         request = post(url=self.base_url + 'api/services/etender/division/GetDivisionsWithUsers',
@@ -91,8 +130,9 @@ class Division(BaseApiTestLogic):
                         print(e)
         return users_in_divisions
 
-    def check_if_chain_exist(self, userid_divisionid):
-        user_division_chain = userid_divisionid
+    def check_if_chain_exist(self, chain):
+        """chain should be dict {userid, divisionid}"""
+        user_division_chain = chain
         list_of_chains = self.get_user_division_chain()
         res = False
 
@@ -104,37 +144,6 @@ class Division(BaseApiTestLogic):
             print('User not in chain')
         finally:
             return res
-
-
-class DivisionUsersInOrganization(Division):
-
-    def __init__(self):
-        self._division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com'}
-        self._division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com'}
-        self._division_head_of_dep_two = {'UserId': '1249', 'Email': 'divisionHeadOfDepTwo@division.com'}
-        self._division_head_of_deps_one = {'UserId': '1250', 'Email': 'divisionHeadOfDepsOne@division.com'}
-        self._division_head_of_deps_two = {'UserId': '1251', 'Email': 'divisionHeadOfDepsTwo@division.com'}
-        self._division_manager_one = {'UserId': '1252', 'Email': 'divisionManagerOne@division.com'}
-        self._division_manager_two = {'UserId': '1253', 'Email': 'divisionManagerTwo@division.com'}
-        self._division_manager_three = {'UserId': '1254', 'Email': 'divisionManagerThree@division.com'}
-        self._division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com'}
-        self._unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com'}
-
-    def get_first_division(self):
-        """:returns first division from current organization in dict"""
-        body = json.dumps({"": ''})
-        return json.loads(self.get_division(body)).get('result').get('items')[0]
-
-
-    def group_user_and_division(self, userId, divisionId):
-        # Sample: {'userid': 1248, 'divisionid': 40}
-        chain = {
-            'userid': int(userId),
-            'divisionid': divisionId}
-        return chain
-
-    def get_users_in_division(self):
-        pass
 
 
 if __name__ == '__main':
