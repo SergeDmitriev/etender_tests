@@ -18,9 +18,7 @@ add_user_to_division_data = [
 delete_user_to_division_data = [
     {'userId': {'UserId': '0', 'Email': 'nonexistentUser@division.com'},
      'division': {'id': 35, 'title': 'test'}
-    },
-
-    {'userId': ''},
+    }
 ]
 
 

@@ -1,3 +1,5 @@
+import json
+
 from requests import post
 
 
@@ -25,6 +27,8 @@ def set_headers_function():
 ### OOP block for test ###
 class BaseApiTestLogic(object):
     base_url = get_prozorro_home_page_function()
+
+    empty_body_request = json.dumps({"": ''})
 
     def get_cookies(self):
         return get_cookies_function()

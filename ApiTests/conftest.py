@@ -17,13 +17,15 @@ def division_update_parametrized(request):
     return request.param
 
 
-@pytest.fixture(params=add_user_to_division_data, ids=[item.get('test_name') for item in add_user_to_division_data])
-def add_user_to_division_parametrized(request):
-    yield request.param
+# @pytest.fixture(params=add_user_to_division_data, ids=[item.get('test_name') for item in add_user_to_division_data])
+# def add_user_to_division_parametrized(request):
+#     yield request.param
+#
+#
+# @pytest.fixture(params=delete_user_to_division_data)
+# def delete_user_to_division_parametrized(request):
+#     yield request.param
 
 
-
-@pytest.fixture(params=delete_user_to_division_data)
-def delete_user_to_division_parametrized(request):
-    yield request.param
-
+if __name__ == '__main__':
+    pass

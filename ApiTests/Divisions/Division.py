@@ -1,6 +1,6 @@
 import json
 from requests import post
-from ApiTests.BaseApiTestLogic import BaseApiTestLogic, set_headers_function
+from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 
 
 class Division(BaseApiTestLogic):
@@ -18,14 +18,12 @@ class Division(BaseApiTestLogic):
     def assert_division_exist(self, division_obj):
         """Checks, if division in list of dict"""
         # TODO: what to do, if there lots of Divisions?
-        body = json.dumps({"": ''})
-        assert division_obj in json.loads(self.get_division(body)).get('result').get('items')
+        assert division_obj in json.loads(self.get_division(self.empty_body_request)).get('result').get('items')
 
     def assert_division_not_exist(self, division_obj):
         """Checks, if division in list of dict"""
         # TODO: what to do, if there lots of Divisions?
-        body = json.dumps({"": ''})
-        assert division_obj not in json.loads(self.get_division(body)).get('result').get('items')
+        assert division_obj not in json.loads(self.get_division(self.empty_body_request)).get('result').get('items')
 
     def create_division(self, division_title):
         """ create obj in Division as dict of (id, title)"""
@@ -53,11 +51,15 @@ class Division(BaseApiTestLogic):
         return request.content
 
     def add_user_to_division(self, **kwargs):
-        """ TODO: use **kwargs instead id"""
+        try:
+            is_head = kwargs.get('isHead')
+        except AttributeError:
+            is_head = None
         request = post(url=self.base_url + 'api/services/etender/division/AddUserToDivision',
                               headers=self.headers,
                               data=json.dumps({'userId': kwargs.get('user').get('UserId'),
-                                               'divisionId': kwargs.get('division').get('id')}))
+                                               'divisionId': kwargs.get('division').get('id'),
+                                               'isHead' : is_head}))
         print('Adding result: ',json.loads(request.content))
         return json.loads(request.content)
 
@@ -72,31 +74,22 @@ class Division(BaseApiTestLogic):
 
 class DivisionUserChain(Division):
 
-    def __init__(self):
-        self._division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com'}
-        self._division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com'}
-        self._division_head_of_dep_two = {'UserId': '1249', 'Email': 'divisionHeadOfDepTwo@division.com'}
-        self._division_head_of_deps_one = {'UserId': '1250', 'Email': 'divisionHeadOfDepsOne@division.com'}
-        self._division_head_of_deps_two = {'UserId': '1251', 'Email': 'divisionHeadOfDepsTwo@division.com'}
-        self._division_manager_one = {'UserId': '1252', 'Email': 'divisionManagerOne@division.com'}
-        self._division_manager_two = {'UserId': '1253', 'Email': 'divisionManagerTwo@division.com'}
-        self._division_manager_three = {'UserId': '1254', 'Email': 'divisionManagerThree@division.com'}
-        self._division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com'}
-        self._unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com'}
+    _division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
+    _division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
+    _division_head_of_dep_two = {'UserId': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}
+    _division_head_of_deps_one = {'UserId': '1250', 'Email': 'divisionHeadOfDepsOne@division.com', 'isHead': 1}
+    _division_head_of_deps_two = {'UserId': '1251', 'Email': 'divisionHeadOfDepsTwo@division.com', 'isHead': 1}
+    _division_manager_one = {'UserId': '1252', 'Email': 'divisionManagerOne@division.com', 'isHead': 0}
+    _division_manager_two = {'UserId': '1253', 'Email': 'divisionManagerTwo@division.com', 'isHead': 0}
+    _division_manager_three = {'UserId': '1254', 'Email': 'divisionManagerThree@division.com', 'isHead': 0}
+    _division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com', 'isHead': 0}
+    _unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com', 'isHead': 0}
 
 
     def get_first_division(self):
         """:returns first division from current organization in dict
         sample: {'id': 40, 'title': 'Support Department'}"""
-        body = json.dumps({"": ''})
-        return json.loads(self.get_division(body)).get('result').get('items')[0]
-
-    # def group_user_and_division(self, userId, divisionId):
-    #     """Sample: {'userid': 1248, 'divisionid': 40}"""
-    #     chain = {
-    #         'userid': int(userId),
-    #         'divisionid': divisionId}
-    #     return chain
+        return json.loads(self.get_division(self.empty_body_request)).get('result').get('items')[0]
 
     def group_user_and_division_into_chain(self, **kwargs):
         """input data: user=, division="""
@@ -141,9 +134,17 @@ class DivisionUserChain(Division):
             assert user_division_chain in list_of_chains
             res = True
         except AssertionError as e:
-            print('User not in chain')
+            print('Chain doesnt exist')
         finally:
             return res
+
+    def check_isHead(self, response):
+        res = response.get('result').get('isHead')
+        if res == 1:
+            return True
+        else:
+            return False
+
 
 
 if __name__ == '__main':
