@@ -51,4 +51,5 @@ element = input.location #выводит словарем
 element = input.get_attribute("value") #не у всех элементов есть .text/или когда нужно достать скрытое значение
 
 
-
+API:
+1. Проверить, пустой ли список: x = [] if not x: print('List is empty')

@@ -1,12 +1,15 @@
 import json
 from requests import post
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
+from ApiTests.app_config import division_admin_login, division_admin_password
 
 
 class Division(BaseApiTestLogic):
 
+    login = division_admin_login
+    password = division_admin_password
+    headers = BaseApiTestLogic.set_headers(login, password)
     division_for_end_to_end = None
-    headers = BaseApiTestLogic.set_headers()
 
     def get_division(self, body):
         """:returns bytes"""
@@ -39,6 +42,7 @@ class Division(BaseApiTestLogic):
         request = post(url=self.base_url + 'api/services/etender/division/UpdateDivision',
                        headers=self.headers,
                        data = json.dumps({"id": division.get('id'), "title": new_title_name}))
+
         self.division = json.loads(request.content).get('result')
         print('After update:', self.division)
         return json.loads(request.content)
@@ -51,10 +55,11 @@ class Division(BaseApiTestLogic):
         return request.content
 
     def add_user_to_division(self, **kwargs):
+        """is_head can be 1 or 0"""
         try:
             is_head = kwargs.get('isHead')
-        except AttributeError:
-            is_head = None
+        except:
+            is_head = 0
         request = post(url=self.base_url + 'api/services/etender/division/AddUserToDivision',
                               headers=self.headers,
                               data=json.dumps({'userId': kwargs.get('user').get('UserId'),
@@ -64,15 +69,24 @@ class Division(BaseApiTestLogic):
         return json.loads(request.content)
 
     def delete_user_from_division(self, user_id, division):
-        """ TODO: use **kwargs instead id"""
         request = post(url=self.base_url + 'api/services/etender/division/RemoveUserFromDivision',
                        headers=self.headers,
-                       data=json.dumps({"userId": user_id, "divisionId": division.get('id')}))
+                       data=json.dumps({"userId": user_id.get('UserId'), "divisionId": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
         return json.loads(request.content)
 
+    def delete_user_from_all_divisions(self, user, chains_to_delete):
+        """chains_to_delete: must be list of """
+        for i in chains_to_delete:
+            try:
+                i['id'] = i.pop('divisionid')
+                self.delete_user_from_division(user, i)
+            except KeyError:
+                self.delete_user_from_division(user, i)
 
-class DivisionUserChain(Division):
+
+
+class DivisionExts(Division):
 
     _division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
     _division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
@@ -85,11 +99,17 @@ class DivisionUserChain(Division):
     _division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com', 'isHead': 0}
     _unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com', 'isHead': 0}
 
+    def check_isHead(self, response):
+        res = response.get('result').get('isHead')
+        if res == 1:
+            return True
+        else:
+            return False
 
-    def get_first_division(self):
+    def get_exact_division(self, division_number = 0):
         """:returns first division from current organization in dict
-        sample: {'id': 40, 'title': 'Support Department'}"""
-        return json.loads(self.get_division(self.empty_body_request)).get('result').get('items')[0]
+        sample: {'id': 1, 'title': 'Support Department'}"""
+        return json.loads(self.get_division(self.empty_body_request)).get('result').get('items')[division_number]
 
     def group_user_and_division_into_chain(self, **kwargs):
         """input data: user=, division="""
@@ -104,21 +124,29 @@ class DivisionUserChain(Division):
                        data=body)
         return json.loads(request.content)
 
-    def get_user_division_chain(self):
-        """:returns list of dict with keys userid, divisionid"""
+    def get_user_division_chain(self, show_isHead=False):
+        """ return list of dict with keys userid, divisionid
+        returns also role, if isHead=1"""
         obj = self.get_divisions_with_users()
         one_chain = {}
         users_in_divisions = []
 
         if obj.get('success') and obj.get('error') is None:
-            for item in obj.get('result').get('items'):     #item - дивижн с вложенными юзерами
-                if item.get('users') != [] and item.get('id') is not None:
+            for division in obj.get('result').get('items'):     #division - дивижн с вложенными юзерами
+                if division.get('users') != [] and division.get('id') is not None:
                     try:
-                        for i in item.get('users'):
-                            one_chain['userid'] = i.get('id')
-                            one_chain['divisionid'] = item.get('id')
-                            users_in_divisions.append({'userid': i.get('id'), 'divisionid': item.get('id')})
-                            # users_in_divisions.append(one_chain)
+                        for user in division.get('users'):
+                            one_chain['userid'] = user.get('id')
+                            one_chain['divisionid'] = division.get('id')
+                            if show_isHead:
+                                one_chain['divisionid'] = division.get('isHead')
+
+                                users_in_divisions.append({'userid': user.get('id'),
+                                                           'divisionid': division.get('id'),
+                                                           'isHead': user.get('isHead')})
+                            else:
+                                users_in_divisions.append({'userid': user.get('id'),
+                                                           'divisionid': division.get('id')})
                     except Exception as e:
                         print(e)
         return users_in_divisions
@@ -138,14 +166,22 @@ class DivisionUserChain(Division):
         finally:
             return res
 
-    def check_isHead(self, response):
-        res = response.get('result').get('isHead')
-        if res == 1:
-            return True
-        else:
-            return False
+    def find_user_in_divisions(self, user_to_check, list_of_chains):
+        """ return list of dicts like {'userid': 1250, 'divisionid': 1, 'isHead': True}"""
+        count = 0
+        chains = []
+
+        for i in list_of_chains:
+            x = i.get('userid')
+            if int(user_to_check.get('UserId')) == x:
+                chains.append({'userid': i.get('userid'), 'divisionid': i.get('divisionid')})
+                count += 1
+            else:
+                pass
+        return chains
 
 
 
-if __name__ == '__main':
+
+if __name__ == '__main__':
     pass
