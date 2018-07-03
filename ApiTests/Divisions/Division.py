@@ -68,22 +68,20 @@ class Division(BaseApiTestLogic):
         print('Adding result: ',json.loads(request.content))
         return json.loads(request.content)
 
-    def delete_user_from_division(self, user_id, division):
+    def delete_user_from_division(self, user, division):
         request = post(url=self.base_url + 'api/services/etender/division/RemoveUserFromDivision',
                        headers=self.headers,
-                       data=json.dumps({"userid": user_id.get('userid'), "divisionid": division.get('id')}))
+                       data=json.dumps({"userid": user.get('userid'), "divisionid": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
         return json.loads(request.content)
 
-    def delete_user_from_all_divisions(self, user, chains_to_delete):
-        """chains_to_delete: must be list of """
-        for i in chains_to_delete:
-            try:
-                i['id'] = i.pop('divisionid')
-                self.delete_user_from_division(user, i)
-            except KeyError:
-                self.delete_user_from_division(user, i)
-
+    def update_user_role(self, user_id, division, isHead):
+        request = post(url=self.base_url + 'api/services/etender/division/UpdateUserIsHead',
+                       headers=self.headers,
+                       data=json.dumps({"userid": user_id.get('userid'), "divisionid": division.get('id'),
+                                        'isHead': isHead}))
+        print('Updating role result: ', json.loads(request.content).get('result'))
+        return json.loads(request.content)
 
 
 class DivisionExts(Division):
@@ -151,20 +149,14 @@ class DivisionExts(Division):
                         print(e)
         return users_in_divisions
 
-    def check_if_chain_exist(self, chain):
-        """chain should be dict {userid, divisionid}"""
-        user_division_chain = chain
-        list_of_chains = self.get_all_user_division_chains()
-        res = False
-
-        try:
-            # Check, if our chain already exists
-            assert user_division_chain in list_of_chains
-            res = True
-        except AssertionError as e:
-            print('Chain doesnt exist')
-        finally:
-            return res
+    def delete_user_from_all_divisions(self, user, chains_to_delete):
+        """chains_to_delete - dict like {'userid': 1250, 'divisionid': 1, 'isHead': True}"""
+        for i in chains_to_delete:
+            try:
+                i['id'] = i.pop('divisionid')
+                self.delete_user_from_division(user, i)
+            except KeyError:
+                self.delete_user_from_division(user, i)
 
     def find_user_in_divisions(self, user_to_check, list_of_chains):
         """ return list of dicts like {'userid': 1250, 'divisionid': 1, 'isHead': True}"""
@@ -180,7 +172,20 @@ class DivisionExts(Division):
                 pass
         return chains
 
+    def check_if_chain_exist(self, chain):
+        """chain should be dict {userid, divisionid}"""
+        user_division_chain = chain
+        list_of_chains = self.get_all_user_division_chains()
+        res = False
 
+        try:
+            # Check, if our chain already exists
+            assert user_division_chain in list_of_chains
+            res = True
+        except AssertionError as e:
+            print('Chain doesnt exist')
+        finally:
+            return res
 
 
 if __name__ == '__main__':

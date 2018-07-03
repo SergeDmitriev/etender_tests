@@ -4,7 +4,7 @@ import pytest
 
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.Divisions.Division import Division, DivisionExts
-# from ApiTests.Helpers import update_keys
+from ApiTests.Helpers import update_keys
 
 
 class TestDivisionCRUD(BaseApiTestLogic):
@@ -250,11 +250,6 @@ class TestAddManagerToDivision(BaseApiTestLogic):
 
         assert 'User in this division already exist' == \
                self.chains.user_division_chain.get('error').get('message')
-
-        self.chains.delete_user_from_division(
-            self.chains._division_manager_one,
-            self.chains.get_exact_division())
-        assert self.chains.check_if_chain_exist(self.user_div) is False
         raise AssertionError # incorrect response
 
     def test_add_user_to_foreign_division_as_manager(self):
@@ -299,7 +294,6 @@ class TestDeleteFromDivision(BaseApiTestLogic):
             user=self.chains._division_head_of_dep_one,
             division=self.chains.get_exact_division())
 
-        # TODO: make precondition "if chain not exist - create it"
         if not self.chains.check_if_chain_exist(user_div):
             # Add user:
             self.chains.user_division_chain = self.chains.add_user_to_division(
@@ -311,6 +305,11 @@ class TestDeleteFromDivision(BaseApiTestLogic):
             self.chains._division_head_of_dep_one,
             self.chains.get_exact_division())
         assert self.chains.check_if_chain_exist(user_div) is False
+
+        # finally: add user back (tearDown?)
+        self.chains.user_division_chain = self.chains.add_user_to_division(
+            user=self.chains._division_head_of_dep_one,
+            division=self.chains.get_exact_division(), isHead=True)
 
     def test_delete_user_from_nonexistent_division(self):
         nonexistent_division = {'id': 0, 'title': 'Nonexistent division'}
@@ -361,7 +360,7 @@ class TestDeleteFromDivision(BaseApiTestLogic):
         foreign_division = {'id': 5, 'title': 'Підрозділ тестування'}
 
         chain = self.chains.group_user_and_division_into_chain(
-            user=self.chains._division_head_of_dep_one,
+            user=user_to_delete,
             division=foreign_division)
 
         result = self.chains.delete_user_from_division(
@@ -375,14 +374,14 @@ class TestDeleteFromDivision(BaseApiTestLogic):
         user_to_delete = {'userid': '235', 'Email': 'turkobubro@meta.ua'}
 
         chain = self.chains.group_user_and_division_into_chain(
-            user=self.chains._division_head_of_dep_one,
+            user=user_to_delete,
             division=self.chains.get_exact_division())
 
         result = self.chains.delete_user_from_division(
             user_to_delete,
             self.chains.get_exact_division())
 
-        assert self.chains.check_if_chain_exist(chain) is False
+        assert self.chains.check_if_chain_exist(chain) == False
         assert 'You in different organization with user try to add' == result.get('error').get('message')
 
 
@@ -452,7 +451,6 @@ class TestAddUserToSeveralDivisions(BaseApiTestLogic):
         self.chains.delete_user_from_all_divisions(self.user,
                                                    self.chains.find_user_in_divisions(self.user, new_chains_list))
 
-
     # def test_add_user_as_manager_if_he_is_head(self):
     #     user = self.chains._unassigned_user_to_division
     #
@@ -461,13 +459,48 @@ class TestAddUserToSeveralDivisions(BaseApiTestLogic):
     #         self.chains.delete_user_from_all_divisions(user, self.chains_to_delete_as_manager)
     #         self.chains.delete_user_from_all_divisions(user, self.chains_to_delete_as_head)
 
-
-
-
     # def test_add_user_as_head_if_he_is_manager(self):
     #     pass
 
 
+class TestUpdateUserRoleInDivision(BaseApiTestLogic):
+
+    chain = DivisionExts()
+    user = chain._unassigned_user_to_division
+
+    def test_update_head_role_to_manager(self):
+        # TODO: deleting in cycle, prints to console lots odd info
+        self.chain.delete_user_from_all_divisions(self.user,
+                                                  self.chain.get_all_user_division_chains(show_isHead=True))
+        adding_chain = self.chain.add_user_to_division(user=self.user,
+                                                        division=self.chain.get_exact_division(),
+                                                        isHead=True).get('result')
+        update_keys(adding_chain, 'divisionId', 'divisionid')
+        update_keys(adding_chain, 'userId', 'userid')
+        assert adding_chain in self.chain.get_all_user_division_chains(True)
+
+        updated_chain = self.chain.update_user_role(self.user, self.chain.get_exact_division(), False).get('result')
+        assert False == updated_chain.get('isHead')
+
+        update_keys(updated_chain, 'divisionId', 'id')
+        self.chain.delete_user_from_division(self.user, updated_chain)
+
+    def test_update_manager_role_to_head(self):
+        # TODO: deleting in cycle, prints to console lots odd info
+        self.chain.delete_user_from_all_divisions(self.user,
+                                                  self.chain.get_all_user_division_chains(show_isHead=True))
+        adding_chain = self.chain.add_user_to_division(user=self.user,
+                                                        division=self.chain.get_exact_division()).get('result')
+        update_keys(adding_chain, 'divisionId', 'divisionid')
+        update_keys(adding_chain, 'userId', 'userid')
+
+        assert adding_chain in self.chain.get_all_user_division_chains(True)
+
+        updated_chain = self.chain.update_user_role(self.user, self.chain.get_exact_division(), True).get('result')
+        assert True == updated_chain.get('isHead')
+
+        update_keys(updated_chain, 'divisionId', 'id')
+        self.chain.delete_user_from_division(self.user, updated_chain)
 
 
 if __name__ == '__main__':
