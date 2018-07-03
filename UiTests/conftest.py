@@ -1,7 +1,7 @@
 import pytest
 from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
-from core import config
+from UiTests.core import config
 
 
 @pytest.fixture(scope='class')

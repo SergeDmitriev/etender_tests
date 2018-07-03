@@ -42,7 +42,7 @@ class ProzorroData(BaseProjectData):
 
 
 
-    home = homePage.get('QA', {}).get('ProzorroQA')
+    home = homePage.get('UAT', {}).get('ProzorroUAT')
     title = project_titles.get('TitleProzorro')
     owner_username = owner_users.get('username')
     owner_password = owner_users.get('password')

@@ -62,8 +62,8 @@ class Division(BaseApiTestLogic):
             is_head = 0
         request = post(url=self.base_url + 'api/services/etender/division/AddUserToDivision',
                               headers=self.headers,
-                              data=json.dumps({'userId': kwargs.get('user').get('UserId'),
-                                               'divisionId': kwargs.get('division').get('id'),
+                              data=json.dumps({'userid': kwargs.get('user').get('userid'),
+                                               'divisionid': kwargs.get('division').get('id'),
                                                'isHead' : is_head}))
         print('Adding result: ',json.loads(request.content))
         return json.loads(request.content)
@@ -71,7 +71,7 @@ class Division(BaseApiTestLogic):
     def delete_user_from_division(self, user_id, division):
         request = post(url=self.base_url + 'api/services/etender/division/RemoveUserFromDivision',
                        headers=self.headers,
-                       data=json.dumps({"userId": user_id.get('UserId'), "divisionId": division.get('id')}))
+                       data=json.dumps({"userid": user_id.get('userid'), "divisionid": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
         return json.loads(request.content)
 
@@ -88,16 +88,16 @@ class Division(BaseApiTestLogic):
 
 class DivisionExts(Division):
 
-    _division_admin = {'UserId': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
-    _division_head_of_dep_one = {'UserId': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
-    _division_head_of_dep_two = {'UserId': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}
-    _division_head_of_deps_one = {'UserId': '1250', 'Email': 'divisionHeadOfDepsOne@division.com', 'isHead': 1}
-    _division_head_of_deps_two = {'UserId': '1251', 'Email': 'divisionHeadOfDepsTwo@division.com', 'isHead': 1}
-    _division_manager_one = {'UserId': '1252', 'Email': 'divisionManagerOne@division.com', 'isHead': 0}
-    _division_manager_two = {'UserId': '1253', 'Email': 'divisionManagerTwo@division.com', 'isHead': 0}
-    _division_manager_three = {'UserId': '1254', 'Email': 'divisionManagerThree@division.com', 'isHead': 0}
-    _division_manager_four = {'UserId': '1255', 'Email': 'divisionManagerFour@division.com', 'isHead': 0}
-    _unassigned_user_to_division = {'UserId': '1266', 'Email': 'UnassignedUserToDivision@division.com', 'isHead': 0}
+    _division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
+    _division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
+    _division_head_of_dep_two = {'userid': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}
+    _division_head_of_deps_one = {'userid': '1250', 'Email': 'divisionHeadOfDepsOne@division.com', 'isHead': 1}
+    _division_head_of_deps_two = {'userid': '1251', 'Email': 'divisionHeadOfDepsTwo@division.com', 'isHead': 1}
+    _division_manager_one = {'userid': '1252', 'Email': 'divisionManagerOne@division.com', 'isHead': 0}
+    _division_manager_two = {'userid': '1253', 'Email': 'divisionManagerTwo@division.com', 'isHead': 0}
+    _division_manager_three = {'userid': '1254', 'Email': 'divisionManagerThree@division.com', 'isHead': 0}
+    _division_manager_four = {'userid': '1255', 'Email': 'divisionManagerFour@division.com', 'isHead': 0}
+    _unassigned_user_to_division = {'userid': '1266', 'Email': 'UnassignedUserToDivision@division.com', 'isHead': 0}
 
     def check_isHead(self, response):
         res = response.get('result').get('isHead')
@@ -113,7 +113,7 @@ class DivisionExts(Division):
 
     def group_user_and_division_into_chain(self, **kwargs):
         """input data: user=, division="""
-        chain = {'userid': int(kwargs.get('user').get('UserId')),
+        chain = {'userid': int(kwargs.get('user').get('userid')),
                 'divisionid': kwargs.get('division').get('id')}
         print('Chain is: ', chain)
         return chain
@@ -124,7 +124,7 @@ class DivisionExts(Division):
                        data=body)
         return json.loads(request.content)
 
-    def get_user_division_chain(self, show_isHead=False):
+    def get_all_user_division_chains(self, show_isHead=False):
         """ return list of dict with keys userid, divisionid
         returns also role, if isHead=1"""
         obj = self.get_divisions_with_users()
@@ -154,7 +154,7 @@ class DivisionExts(Division):
     def check_if_chain_exist(self, chain):
         """chain should be dict {userid, divisionid}"""
         user_division_chain = chain
-        list_of_chains = self.get_user_division_chain()
+        list_of_chains = self.get_all_user_division_chains()
         res = False
 
         try:
@@ -173,7 +173,7 @@ class DivisionExts(Division):
 
         for i in list_of_chains:
             x = i.get('userid')
-            if int(user_to_check.get('UserId')) == x:
+            if int(user_to_check.get('userid')) == x:
                 chains.append({'userid': i.get('userid'), 'divisionid': i.get('divisionid')})
                 count += 1
             else:

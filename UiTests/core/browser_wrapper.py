@@ -1,7 +1,6 @@
-from selenium.webdriver.common.alert import Alert
-from core import config
-from core.elements import SmartElement, SmartElementsCollection
-from core.conditions import present
+from UiTests.core import config
+from UiTests.core.elements import SmartElement, SmartElementsCollection
+from UiTests.core.conditions import present
 from selenium.common.exceptions import NoSuchElementException
 
 #Base commands:

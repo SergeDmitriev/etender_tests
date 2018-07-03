@@ -1,4 +1,4 @@
-from core import config
+from UiTests.core import config
 from operator import contains, eq
 from selenium.common.exceptions import StaleElementReferenceException, NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC

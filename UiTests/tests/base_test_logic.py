@@ -1,11 +1,11 @@
 import pytest
 import re
-from core.browser_wrapper import visit, get_title, s, get_curl, wait_blockUI, \
-    get_source, scroll_to, get_attr_value, send_javascript_click, get_javascript_cur_page, refresh
-from core.conditions import text, clickable, present
-from core.etender_data import user_roles
-from tests.temp_test_data import TempTestData
-import time
+from UiTests.core.browser_wrapper import visit, get_title, s, wait_blockUI, \
+    get_source, scroll_to, get_attr_value, get_javascript_cur_page, refresh
+from UiTests.core.conditions import text
+from UiTests.core.etender_data import user_roles
+from UiTests.tests.temp_test_data import TempTestData
+
 
 @pytest.mark.usefixtures("setup")
 class BaseTest(object):

@@ -1,11 +1,10 @@
-from core.etender_data import RialtoData
-from tests.base_test_logic import *
-from tests.helpers import check_bidButton_for_anonym
+from UiTests.core.etender_data import ProzorroData
+from UiTests.tests.base_test_logic import *
 
 
-class TestRialtoOwner(BaseTest):
+class TestProzorroOwner(BaseOwnerTest):
 
-    d = BaseTestLogic(RialtoData)
+    d = BaseTestLogic(ProzorroData)
     user = user_roles.get('owner')
 
     def test_visit_home(self):
@@ -19,9 +18,9 @@ class TestRialtoOwner(BaseTest):
         self.d.check_create_from_template_btn()
 
 
-class TestRialtoViewer(BaseViewerTest):
+class TestProzorroViewer(BaseViewerTest):
 
-    d = BaseTestLogic(RialtoData)
+    d = BaseTestLogic(ProzorroData)
     user = user_roles.get('viewer1')
 
     def test_visit_home(self):
@@ -30,16 +29,19 @@ class TestRialtoViewer(BaseViewerTest):
     def test_fill_login(self):
         self.d.fill_login(self.user)
 
-    def test_add_tender_to_favorite_from_tenderTable(self):
-        self.d.add_tender_to_favorite_from_tenderTable()
+    # def test_add_tender_to_favorite_from_tenderTable(self):
+    #     self.d.add_tender_to_favorite_from_tenderTable()
 
     def test_add_tender_to_favorite_from_tenderDetailes(self):
         self.d.add_tender_to_favorite_from_tenderDetailes()
 
+    # def test_go_to_tender(self):
+    #     self.d.go_to_tender("http://40.69.95.23/#/tenderDetailes/48881cb3582e4049b5e2db33f931fd03")
 
-class TestRialtoAnonym(BaseAnonymTest):
 
-    d = BaseTestLogic(RialtoData)
+class TestProzorroAnonym(BaseAnonymTest):
+
+    d = BaseTestLogic(ProzorroData)
     user = user_roles.get('anonym')
 
     def test_visit_home(self):

@@ -1,7 +1,7 @@
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
-from core.conditions import *
-from core import config
+from UiTests.core.conditions import *
+from UiTests.core import config
 
 
 def actions():

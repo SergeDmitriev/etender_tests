@@ -1,5 +1,5 @@
-from core.browser_wrapper import s
-from core.conditions import text
+from UiTests.core.browser_wrapper import s
+
 
 def toastr():
 

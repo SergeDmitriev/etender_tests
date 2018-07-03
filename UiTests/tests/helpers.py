@@ -1,5 +1,3 @@
-from core.browser_wrapper import visit, get_curl, s
-
 # unnecessary implementationS
 # def print_to_console_username(login):
 #         ("Current user is: ", login)

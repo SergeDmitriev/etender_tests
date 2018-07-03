@@ -1,6 +1,5 @@
-from core.etender_data import RialtoAuctionData
-from tests.base_test_logic import *
-from tests.helpers import check_bidButton_for_anonym
+from UiTests.core.etender_data import RialtoAuctionData
+from UiTests.tests.base_test_logic import *
 
 
 class TestRialtoAuctionOwner(BaseTest):

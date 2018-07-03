@@ -5,7 +5,7 @@ from requests import post
 
 ### Functional block for fixtures ###
 # TODO: guess its a bad way
-from core.etender_data import homePage
+from UiTests.core.etender_data import homePage
 
 def get_prozorro_home_page_function():
     """cut /# from url"""
