@@ -2,9 +2,8 @@ import json
 
 import pytest
 
+from ApiTests.Application.Division import Division
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
-from ApiTests.Divisions.Division import Division, DivisionExts
-from ApiTests.Helpers import update_keys
 
 
 class TestDivisionCRUD(BaseApiTestLogic):
@@ -102,7 +101,7 @@ class TestAddHeadToDivision(BaseApiTestLogic):
         assert user_to_add not in all_chains
         assert self.chains.user_division_chain.get('error').get('message') \
                == 'You in different organization with user try to add'
-        raise AssertionError #response not correct
+        raise AssertionError  # response not correct
 
     @pytest.mark.xfail
     def test_add_user_to_nonexistent_division_as_head(self):
@@ -250,7 +249,7 @@ class TestAddManagerToDivision(BaseApiTestLogic):
 
         assert 'User in this division already exist' == \
                self.chains.user_division_chain.get('error').get('message')
-        raise AssertionError # incorrect response
+        raise AssertionError  # incorrect response
 
     def test_add_user_to_foreign_division_as_manager(self):
         all_chains = self.chains.get_all_user_division_chains()
@@ -281,7 +280,7 @@ class TestAddManagerToDivision(BaseApiTestLogic):
         assert 'You in different organization with user try to add' == \
                self.chains.user_division_chain.get('error').get('message')
         assert user_to_add not in all_chains
-        raise AssertionError #incorrect response message
+        raise AssertionError  # incorrect response message
 
 
 class TestDeleteFromDivision(BaseApiTestLogic):
@@ -464,7 +463,6 @@ class TestAddUserToSeveralDivisions(BaseApiTestLogic):
 
 
 class TestUpdateUserRoleInDivision(BaseApiTestLogic):
-
     chain = DivisionExts()
     user = chain._unassigned_user_to_division
 
@@ -473,8 +471,8 @@ class TestUpdateUserRoleInDivision(BaseApiTestLogic):
         self.chain.delete_user_from_all_divisions(self.user,
                                                   self.chain.get_all_user_division_chains(show_isHead=True))
         adding_chain = self.chain.add_user_to_division(user=self.user,
-                                                        division=self.chain.get_exact_division(),
-                                                        isHead=True).get('result')
+                                                       division=self.chain.get_exact_division(),
+                                                       isHead=True).get('result')
         update_keys(adding_chain, 'divisionId', 'divisionid')
         update_keys(adding_chain, 'userId', 'userid')
         assert adding_chain in self.chain.get_all_user_division_chains(True)
@@ -490,7 +488,7 @@ class TestUpdateUserRoleInDivision(BaseApiTestLogic):
         self.chain.delete_user_from_all_divisions(self.user,
                                                   self.chain.get_all_user_division_chains(show_isHead=True))
         adding_chain = self.chain.add_user_to_division(user=self.user,
-                                                        division=self.chain.get_exact_division()).get('result')
+                                                       division=self.chain.get_exact_division()).get('result')
         update_keys(adding_chain, 'divisionId', 'divisionid')
         update_keys(adding_chain, 'userId', 'userid')
 

@@ -1,4 +1,4 @@
-from ApiTests.Divisions.Division import DivisionExts
+from ApiTests.Application.Division import DivisionExts
 
 update_division_test_data = [
     {'new_division_title': 'Division not exists', 'division':{'id': 0, 'title': 'Not existing Department'}},

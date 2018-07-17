@@ -31,7 +31,7 @@ for i in range(300): print('\''+''.join([random.choice(list('123456789qwertyuiop
 
 5. traceback info: https://docs.python.org/2/library/traceback.html
 
-
+"""pt.test request - это некий объект, с помощью которого мы взаимодействуем с фикстурами"""
 
 
 CSS selectors:

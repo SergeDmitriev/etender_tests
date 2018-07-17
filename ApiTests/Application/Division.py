@@ -1,5 +1,6 @@
 import json
 from requests import post
+
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.app_config import division_admin_login, division_admin_password
 
@@ -13,7 +14,7 @@ class Division(BaseApiTestLogic):
 
     def get_division(self, body):
         """:returns bytes"""
-        request = post(url=self.base_url + 'api/services/etender/division/GetDivisions',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/GetDivisions',
                        headers=self.headers,
                        data=body)
         return request.content
@@ -30,7 +31,7 @@ class Division(BaseApiTestLogic):
 
     def create_division(self, division_title):
         """ create obj in Division as dict of (id, title)"""
-        request = post(url=self.base_url + 'api/services/etender/division/CreateDivision',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/CreateDivision',
                        headers=self.headers,
                        data=json.dumps({"title": division_title}))
         self.division = json.loads(request.content).get('result')
@@ -39,7 +40,7 @@ class Division(BaseApiTestLogic):
 
     def update_division(self, division, new_title_name):
         print('Before update:', division)
-        request = post(url=self.base_url + 'api/services/etender/division/UpdateDivision',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/UpdateDivision',
                        headers=self.headers,
                        data = json.dumps({"id": division.get('id'), "title": new_title_name}))
 
@@ -49,7 +50,7 @@ class Division(BaseApiTestLogic):
 
     def delete_division(self, division):
         """:returns: dict id, title"""
-        request = post(url=self.base_url + 'api/services/etender/division/DeleteDivision',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/DeleteDivision',
                        headers=self.headers,
                        data = json.dumps({"id": division.get('id')}))
         return request.content
@@ -60,7 +61,7 @@ class Division(BaseApiTestLogic):
             is_head = kwargs.get('isHead')
         except:
             is_head = 0
-        request = post(url=self.base_url + 'api/services/etender/division/AddUserToDivision',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/AddUserToDivision',
                               headers=self.headers,
                               data=json.dumps({'userid': kwargs.get('user').get('userid'),
                                                'divisionid': kwargs.get('division').get('id'),
@@ -69,14 +70,14 @@ class Division(BaseApiTestLogic):
         return json.loads(request.content)
 
     def delete_user_from_division(self, user, division):
-        request = post(url=self.base_url + 'api/services/etender/division/RemoveUserFromDivision',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/RemoveUserFromDivision',
                        headers=self.headers,
                        data=json.dumps({"userid": user.get('userid'), "divisionid": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
         return json.loads(request.content)
 
     def update_user_role(self, user_id, division, isHead):
-        request = post(url=self.base_url + 'api/services/etender/division/UpdateUserIsHead',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/UpdateUserIsHead',
                        headers=self.headers,
                        data=json.dumps({"userid": user_id.get('userid'), "divisionid": division.get('id'),
                                         'isHead': isHead}))
@@ -117,7 +118,7 @@ class DivisionExts(Division):
         return chain
 
     def get_divisions_with_users(self, body=json.dumps({"": ''})):
-        request = post(url=self.base_url + 'api/services/etender/division/GetDivisionsWithUsers',
+        request = post(url=self.base_url + 'ApiTests/services/etender/division/GetDivisionsWithUsers',
                        headers=self.headers,
                        data=body)
         return json.loads(request.content)

@@ -14,7 +14,7 @@ def get_cookies():
     return request.headers['Set-Cookie']
 
 def get_tenders():
-    request_url = 'api/services/etender/tender/GetTenders'
+    request_url = 'ApiTests/services/etender/tender/GetTenders'
     content_type = {"Content-Type": "application/json; charset=utf-8",
                     'Cookie': get_cookies()}
     resp = requests.post(url=request_url, headers=content_type, data=json_to_body())
