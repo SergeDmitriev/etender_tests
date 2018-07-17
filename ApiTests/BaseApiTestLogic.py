@@ -1,9 +1,7 @@
 import json
 from requests import post
 
-
-### Functional block for fixtures ###
-# TODO: guess its a bad way
+from ApiTests.app_config import universal_password
 from UiTests.core.etender_data import homePage
 
 
@@ -12,20 +10,25 @@ def get_prozorro_home_page_function():
     return homePage.get('QA', {}).get('ProzorroQA')[:-2]
 
 
-def get_cookies_function(login, password):
+def get_cookies_function(*credentials):
+    """*credentials: login, password"""
+    try:
+        password = credentials[1]
+    except IndexError:
+        password = universal_password
+
     request = post(url=get_prozorro_home_page_function() + 'Account/Login',
-                   data={"UsernameOrEmailAddress": login,
+                   data={"UsernameOrEmailAddress": credentials[0],
                          "Password": password})
     return request.headers['Set-Cookie']
 
 
+
 def set_headers_function(login, password):
-    """:return dict"""
-    headers = {"Content-Type": "application/json; charset=utf-8", 'Cookie': get_cookies_function(login, password)}
-    return headers
+    """ returns dict"""
+    return {"Content-Type": "application/json; charset=utf-8", 'Cookie': get_cookies_function(login, password)}
 
 
-### OOP block for test ###
 class BaseApiTestLogic(object):
     base_url = get_prozorro_home_page_function()
 
@@ -36,8 +39,7 @@ class BaseApiTestLogic(object):
 
     @staticmethod
     def set_headers(login, password):
-        headers = set_headers_function(login, password)
-        return headers
+        return set_headers_function(login, password)
 
     def check_success_status(self, request):
         """Check json.loads(request.content) status"""
@@ -55,6 +57,11 @@ class BaseApiTestLogic(object):
             return False
         else:
             raise TypeError
+
+    def log_out_user(self, headers):
+        request = post(url=self.base_url + 'Account/Logout',
+                       headers=headers)
+        return request
 
 
 if __name__ == "__main__":

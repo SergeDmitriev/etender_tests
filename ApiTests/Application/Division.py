@@ -2,13 +2,13 @@ import json
 from requests import post
 
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
-from ApiTests.app_config import division_admin_login, division_admin_password
+from ApiTests.app_config import division_admin_login, universal_password
 
 
 class Division(BaseApiTestLogic):
 
     login = division_admin_login
-    password = division_admin_password
+    password = universal_password
     headers = BaseApiTestLogic.set_headers(login, password)
     division_for_end_to_end = None
 
@@ -42,7 +42,7 @@ class Division(BaseApiTestLogic):
         print('Before update:', division)
         request = post(url=self.base_url + 'ApiTests/services/etender/division/UpdateDivision',
                        headers=self.headers,
-                       data = json.dumps({"id": division.get('id'), "title": new_title_name}))
+                       data=json.dumps({"id": division.get('id'), "title": new_title_name}))
 
         self.division = json.loads(request.content).get('result')
         print('After update:', self.division)

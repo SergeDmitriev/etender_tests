@@ -1,11 +1,11 @@
-homePage = {'QA': {'ProzorroQA':'http://52.138.214.244/#/',
+homePage = {'QA': {'ProzorroQA': 'http://qa-prozorro.e-tender.ua/#/',
                    'RialtoQA': 'http://rialto.qa.e-tender.ua/#/',
                    'RialtoAuctionQA': 'http://rialtoauction.qa.e-tender.ua/#/',
                    'RialtoClosedQA': 'http://rialtoclosed.qa.e-tender.ua/#/'},
 
-            'UAT':{'ProzorroUAT':'http://bid.uat.e-tender.biz/#/',
-                   'RialtoUAT':None,
-                   'RialtoAuctionUAT':'http://rialtoauction.uat.e-tender.ua/#/',
+            'UAT':{'ProzorroUAT': 'http://bid.uat.e-tender.biz/#/',
+                   'RialtoUAT': None,
+                   'RialtoAuctionUAT': 'http://rialtoauction.uat.e-tender.ua/#/',
                    'RialtoClosedUAT': 'http://rialtoclosed.uat.e-tender.ua/#/'}}
 
 user_roles = {'owner': 'owner',

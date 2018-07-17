@@ -39,6 +39,7 @@ CSS selectors:
 
 
 Pytest fixtures:
+- py.test request - это некий объект, с помощью которого мы взаимодействуем с фикстурами
 - scope='class', result will be (print(each word)): SetUP a b teardown
 - scope='function'(default), result will be (print(each word)): SetUP a teardown SetUP b teardown
 

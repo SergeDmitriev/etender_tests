@@ -2,8 +2,11 @@ import json
 
 import pytest
 
-from ApiTests.Application.Division import Division
+from ApiTests.Application.Tender import ToDoTenders
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
+from ApiTests.Application.Division import Division, DivisionExts
+from ApiTests.Helpers import update_keys
+from ApiTests.app_config import division_admin_login, universal_password
 
 
 class TestDivisionCRUD(BaseApiTestLogic):
@@ -24,7 +27,7 @@ class TestDivisionCRUD(BaseApiTestLogic):
 
     def test_assert_some_division_in_list(self):
         # TODO: remove hardcoded and make parametrize
-        old_existing_division = {'id': 1, 'title': 'QA Department'}
+        old_existing_division = {'id': 40, 'title': 'Support Department'}
         self.division.assert_division_exist(old_existing_division)
 
     def test_create_division(self):
@@ -127,7 +130,7 @@ class TestAddHeadToDivision(BaseApiTestLogic):
                 division=self.chains.get_exact_division(),
                 isHead=1)
             assert self.chains.check_if_chain_exist(self.user_div)
-            assert True == self.chains.check_isHead(self.chains.user_division_chain)
+            assert True is self.chains.check_isHead(self.chains.user_division_chain)
 
         self.chains.user_division_chain = self.chains.add_user_to_division(
             user=self.chains._division_head_of_dep_one,
@@ -428,8 +431,8 @@ class TestAddUserToSeveralDivisions(BaseApiTestLogic):
             self.chains.delete_user_from_all_divisions(self.user, chains_to_delete_as_manager)
 
         first = self.chains.add_user_to_division(user=self.user,
-                                                 division=self.chains.get_exact_division()
-                                                 , isHead=0).get('result')
+                                                 division=self.chains.get_exact_division(),
+                                                 isHead=0).get('result')
 
         second = self.chains.add_user_to_division(user=self.user,
                                                   division=self.chains.get_exact_division(1), isHead=0).get('result')
@@ -478,7 +481,7 @@ class TestUpdateUserRoleInDivision(BaseApiTestLogic):
         assert adding_chain in self.chain.get_all_user_division_chains(True)
 
         updated_chain = self.chain.update_user_role(self.user, self.chain.get_exact_division(), False).get('result')
-        assert False == updated_chain.get('isHead')
+        assert False is updated_chain.get('isHead')
 
         update_keys(updated_chain, 'divisionId', 'id')
         self.chain.delete_user_from_division(self.user, updated_chain)
@@ -495,10 +498,30 @@ class TestUpdateUserRoleInDivision(BaseApiTestLogic):
         assert adding_chain in self.chain.get_all_user_division_chains(True)
 
         updated_chain = self.chain.update_user_role(self.user, self.chain.get_exact_division(), True).get('result')
-        assert True == updated_chain.get('isHead')
+        assert True is updated_chain.get('isHead')
 
         update_keys(updated_chain, 'divisionId', 'id')
         self.chain.delete_user_from_division(self.user, updated_chain)
+
+
+class TestGetToDoTenders(BaseApiTestLogic):
+    # TODO: add assertion with db
+    all_assigned = ToDoTenders(division_admin_login, universal_password)
+
+    @pytest.fixture(autouse=True)
+    def user(self, get_tenders_with_responsibles_obj):
+        yield get_tenders_with_responsibles_obj
+
+    def test_get_tenders_in_work(self, user):
+        print('В РОБОТІ: ', user.count_all_records(user.get_tenders_with_responsibles('in_work')))
+
+    def test_get_tenders_new(self, user):
+        all_tenders_count = user.count_all_records(user.get_tenders_with_responsibles('new_tenders'))
+        all_in_work = self.all_assigned.count_all_records(self.all_assigned.get_tenders_with_responsibles('in_work'))
+        print(all_tenders_count - all_in_work)
+
+    def test_get_tenders_archive(self, user):
+        print(user.count_all_records(user.get_tenders_with_responsibles('archive')))
 
 
 if __name__ == '__main__':
