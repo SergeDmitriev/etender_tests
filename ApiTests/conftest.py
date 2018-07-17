@@ -7,8 +7,6 @@ from ApiTests.app_config import division_admin_login, division_head_of_dep_one_l
 from ApiTests.etender_data_api import update_division_test_data, get_tenders_parameters, \
     get_tenders_with_responsibles_users
 
-from ApiTests.etender_data_api import update_division_test_data
-
 
 # region Division
 @pytest.fixture

@@ -23,7 +23,6 @@ def get_cookies_function(*credentials):
     return request.headers['Set-Cookie']
 
 
-
 def set_headers_function(login, password):
     """ returns dict"""
     return {"Content-Type": "application/json; charset=utf-8", 'Cookie': get_cookies_function(login, password)}
