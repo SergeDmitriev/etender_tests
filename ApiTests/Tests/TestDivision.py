@@ -10,7 +10,6 @@ from ApiTests.Helpers import update_keys
 from ApiTests.app_config import division_admin_login, universal_password
 
 
-@pytest.mark.DivisionCrudTests
 class TestDivisionCRUD(BaseApiTestLogic):
     division = Division()
 
