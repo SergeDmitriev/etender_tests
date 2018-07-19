@@ -82,6 +82,14 @@ class Division(BaseApiTestLogic):
         print('Updating role result: ', json.loads(request.content).get('result'))
         return json.loads(request.content)
 
+    def set_responsible_user_tender(self, tender_new_id, user_id, delete_existing_managers):
+        request = post(url='',
+                       headers=self.headers,
+                       data=json.dumps({"tenderNewId": tender_new_id,
+                                        "userId": user_id,
+                                        "deleteExistingManagers": delete_existing_managers}))
+
+
 
 class DivisionExts(Division):
     _division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
@@ -184,6 +192,8 @@ class DivisionExts(Division):
             print('Chain doesnt exist')
         finally:
             return res
+
+
 
 
 if __name__ == '__main__':

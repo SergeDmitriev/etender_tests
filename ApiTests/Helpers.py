@@ -26,6 +26,31 @@ def set_ids_for_fixture(input_data):
     return result_list
 
 
+def page_switch_times(count_all_records):
+    """Method helps to define, how many times we should switch between pages
+     {"Page": 1, "PageSize": 10}"""
+    def cycle_times(items_count):
+        i = 0
+        j = 0
+        if items_count > 10:
+            if items_count % 10 > 0:
+                i = items_count // 10 + 1
+            else:
+                i = items_count // 10
+                print(i)
+        elif 0 < items_count <= 10:
+            i = 1
+        elif items_count == 0:
+            pass
+
+        for j in range(i):
+            j += 1
+        return j
+
+    for x in range(1, cycle_times(count_all_records)+1):
+        yield x
+
+
 if __name__ == '__main__':
     pass
 

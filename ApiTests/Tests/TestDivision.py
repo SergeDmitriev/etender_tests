@@ -527,9 +527,15 @@ class TestGetToDoTenders(BaseApiTestLogic):
 
 
 class TestSetResponsibleUserTender(BaseApiTestLogic):
+    all_assigned = ToDoTenders(division_admin_login, universal_password)
 
-    def test(self):
-        pass
+    @pytest.fixture
+    def user(self, get_tenders_with_responsibles_obj):
+        yield get_tenders_with_responsibles_obj
+
+    def test_assign_tender_to_admin(self, user):
+        all_tenders_apiid = user.get_all_assigned_tenders_for_user(user.get_tenders_with_responsibles('in_work'))
+        print(all_tenders_apiid)
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ from requests import post
 
 from ApiTests.Application.Models.GetTendersModel import GetTendersModel, GetTendersWithResponsiblesModel
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
-from ApiTests.Helpers import body_to_dict
+from ApiTests.Helpers import body_to_dict, page_switch_times
 from ApiTests.app_config import production_mode
 
 
@@ -13,25 +13,26 @@ class Tender(BaseApiTestLogic):
         tab: competitive or noncompetitive procedures"""
         self.headers = self.set_headers(credentials[0], credentials[1])
 
-    def count_all_records(self, get_tenders_result):
-        return get_tenders_result['result']['countAllRecords']
-
-    def get_tenders(self, tab, mode=production_mode, is_real_tenders_for_test_mode=False):
+    def get_tenders(self, tab, mode=production_mode, is_real_tenders_for_test_mode=False, page_number=1):
         """method returns dict, also store result to obj attribute - no to use get_tenders"""
         request = post(url=self.base_url + 'api/services/etender/tender/GetTenders',
                        headers=self.headers,
-                       data=GetTendersModel(tab, mode, is_real_tenders_for_test_mode).get_request_body())
+                       data=GetTendersModel(tab, mode, is_real_tenders_for_test_mode,
+                                            page_number=page_number).get_request_body())
         assert True is body_to_dict(request.content)['success']
         return body_to_dict(request.content)
+
+    def count_all_records(self, get_tenders_result):
+        return get_tenders_result['result']['countAllRecords']
 
 
 class ToDoTenders(Tender):
     def __init__(self, *credentials):
         super().__init__(*credentials)
 
-    def get_tenders_with_responsibles(self, inner_tab):
+    def get_tenders_with_responsibles(self, inner_tab, page_number=1):
 
-        obj = GetTendersWithResponsiblesModel()
+        obj = GetTendersWithResponsiblesModel(page_number=page_number)
 
         if inner_tab == 'in_work':
             obj.set_tenders_in_work_params()
@@ -47,6 +48,18 @@ class ToDoTenders(Tender):
                        data=obj.get_request_body())
         assert self.check_success_status(body_to_dict(request.content))
         return body_to_dict(request.content)
+
+    def get_all_assigned_tenders_for_user(self, get_tenders_result):
+        """get chain {tender_new_id, }"""
+        tender_ids_list = []
+
+        for i in page_switch_times(self.count_all_records(get_tenders_result)):
+            result_from_page = self.get_tenders_with_responsibles(inner_tab='in_work', page_number=i)
+            for x in result_from_page['result']['tender']:
+                tender_ids_list.append({'tender_new_id': x['id'],
+                                            'responsibles': x['responsibles']
+                                            })
+        return tender_ids_list
 
 
 if __name__ == '__main__':
