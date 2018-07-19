@@ -1,6 +1,4 @@
 import json
-
-import allure
 import pytest
 
 from ApiTests.Application.Tender import ToDoTenders
@@ -296,9 +294,11 @@ class TestDeleteFromDivision(BaseApiTestLogic):
         user_div = self.chains.group_user_and_division_into_chain(
             user=self.chains._division_head_of_dep_one,
             division=self.chains.get_exact_division())
+        add_user_back = True
 
         if not self.chains.check_if_chain_exist(user_div):
             # Add user:
+            add_user_back = False
             self.chains.user_division_chain = self.chains.add_user_to_division(
                 user=self.chains._division_head_of_dep_one,
                 division=self.chains.get_exact_division())
@@ -310,9 +310,10 @@ class TestDeleteFromDivision(BaseApiTestLogic):
         assert self.chains.check_if_chain_exist(user_div) is False
 
         # finally: add user back (tearDown?)
-        self.chains.user_division_chain = self.chains.add_user_to_division(
-            user=self.chains._division_head_of_dep_one,
-            division=self.chains.get_exact_division(), isHead=True)
+        if add_user_back:
+            self.chains.user_division_chain = self.chains.add_user_to_division(
+                user=self.chains._division_head_of_dep_one,
+                division=self.chains.get_exact_division(), isHead=True)
 
     def test_delete_user_from_nonexistent_division(self):
         nonexistent_division = {'id': 0, 'title': 'Nonexistent division'}
@@ -523,6 +524,12 @@ class TestGetToDoTenders(BaseApiTestLogic):
 
     def test_get_tenders_archive(self, user):
         print(user.count_all_records(user.get_tenders_with_responsibles('archive')))
+
+
+class TestSetResponsibleUserTender(BaseApiTestLogic):
+
+    def test(self):
+        pass
 
 
 if __name__ == '__main__':
