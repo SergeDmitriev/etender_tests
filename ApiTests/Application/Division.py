@@ -5,10 +5,11 @@ from ApiTests.app_config import division_admin_login, universal_password
 
 
 class Division(BaseApiTestLogic):
-    login = division_admin_login
-    password = universal_password
-    headers = BaseApiTestLogic.set_headers(login, password)
+
     division_for_end_to_end = None
+
+    def __init__(self, login=division_admin_login, password=universal_password):
+        self.headers = BaseApiTestLogic.set_headers(login, password)
 
     def get_division(self, body):
         """:returns bytes"""
@@ -83,15 +84,16 @@ class Division(BaseApiTestLogic):
         return json.loads(request.content)
 
     def set_responsible_user_tender(self, tender_new_id, user_id, delete_existing_managers):
-        request = post(url='',
+        request = post(url=self.base_url + 'api/services/etender/userTender/SetResponsibleUserTender',
                        headers=self.headers,
                        data=json.dumps({"tenderNewId": tender_new_id,
                                         "userId": user_id,
                                         "deleteExistingManagers": delete_existing_managers}))
-
+        return json.loads(request.content)
 
 
 class DivisionExts(Division):
+
     _division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
     _division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
     _division_head_of_dep_two = {'userid': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}
@@ -102,6 +104,9 @@ class DivisionExts(Division):
     _division_manager_three = {'userid': '1254', 'Email': 'divisionManagerThree@division.com', 'isHead': 0}
     _division_manager_four = {'userid': '1255', 'Email': 'divisionManagerFour@division.com', 'isHead': 0}
     _unassigned_user_to_division = {'userid': '1266', 'Email': 'UnassignedUserToDivision@division.com', 'isHead': 0}
+
+    def __init__(self, *kwargs):
+        super().__init__(*kwargs)
 
     def check_isHead(self, response):
         res = response.get('result').get('isHead')

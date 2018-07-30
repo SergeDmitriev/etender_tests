@@ -49,17 +49,42 @@ class ToDoTenders(Tender):
         assert self.check_success_status(body_to_dict(request.content))
         return body_to_dict(request.content)
 
-    def get_all_assigned_tenders_for_user(self, get_tenders_result):
+    def get_all_assigned_users_for_tenders(self, get_tenders_result):
         """get chain {tender_new_id, }"""
-        tender_ids_list = []
+        chains = []
 
         for i in page_switch_times(self.count_all_records(get_tenders_result)):
             result_from_page = self.get_tenders_with_responsibles(inner_tab='in_work', page_number=i)
             for x in result_from_page['result']['tender']:
-                tender_ids_list.append({'tender_new_id': x['id'],
-                                            'responsibles': x['responsibles']
-                                            })
-        return tender_ids_list
+                chains.append({'tender_new_id': x['id'],
+                               'responsibles': x['responsibles']
+                               })
+        return chains
+
+    def get_top_100_tender_ids(self):
+        """get tenders from 10 pages in new_tenders tab"""
+        tenders_id = []
+        for i in page_switch_times(100):
+            result_from_page = self.get_tenders_with_responsibles(inner_tab='new_tenders', page_number=i)
+            for x in result_from_page['result']['tender']:
+                tenders_id.append({'tender_new_id': x['id']})
+        return tenders_id
+
+    def get_list_unassigned_tender(self, all_assigned_tenders_for_user_chain, tender_id_list_to_check):
+        """input: all_assigned_tenders_for_user_chain - {'tender_new_id': '', 'responsibles': [{}]'
+        tender_id_list_to_check - {'tender_new_id': ''...}"""
+        result_ids = []
+        a = [i['tender_new_id'] for i in all_assigned_tenders_for_user_chain]
+        b = [i['tender_new_id'] for i in tender_id_list_to_check]
+
+        # same result:
+        # return list(filter(lambda x: x not in [i['tender_new_id'] for i in all_assigned_tenders_for_user_chain],
+        # [i['tender_new_id'] for i in tender_id_list_to_check]))
+
+        for i in b:
+            if i not in a:
+                result_ids.append(i)
+        return result_ids
 
 
 if __name__ == '__main__':

@@ -2,10 +2,8 @@ import pytest
 from ApiTests.Application.Division import Division
 from ApiTests.Application.Tender import ToDoTenders
 from ApiTests.Helpers import set_ids_for_fixture
-from ApiTests.app_config import division_admin_login, division_head_of_dep_one_login, division_manager_one_login, \
-    division_manager_four_login
 from ApiTests.etender_data_api import update_division_test_data, get_tenders_parameters, \
-    get_tenders_with_responsibles_users
+    get_tenders_with_responsibles_users, user_names, users_for_assignment_to_tender, data_for_assign_user
 
 
 # region Division
@@ -30,18 +28,33 @@ def get_tenders_tab_parametrized(request):
 
 
 # region GetTendersWithResponsibles
-@pytest.fixture(params=get_tenders_with_responsibles_users, ids=[division_admin_login,
-                                                                 division_head_of_dep_one_login,
-                                                                 division_manager_one_login,
-                                                                 division_manager_four_login])
+@pytest.fixture(params=get_tenders_with_responsibles_users,
+                ids=user_names)
 def get_tenders_with_responsibles_obj(request):
     obj = ToDoTenders(*request.param)
     yield obj
     del obj
 
+
+@pytest.fixture(params=get_tenders_with_responsibles_users,
+                ids=user_names)
+def who_assign(request):
+    yield request.param
+
+
+@pytest.fixture(params=users_for_assignment_to_tender,
+                ids=user_names)
+def assign_to_user(request):
+    return request.param
 # endregion GetTendersResponsibles
+
+
+@pytest.fixture(params=data_for_assign_user, ids=set_ids_for_fixture(data_for_assign_user))
+def assignment_user_for_tender_parameters(request):
+    yield {'who_assign': request.param['who_assign'],
+           'assign_to': request.param['assign_to'],
+           'can_assign': request.param['can_assign']}
 
 
 if __name__ == '__main__':
     pass
-
