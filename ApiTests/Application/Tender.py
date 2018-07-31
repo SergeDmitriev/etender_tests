@@ -3,7 +3,7 @@ from requests import post
 from ApiTests.Application.Models.GetTendersModel import GetTendersModel, GetTendersWithResponsiblesModel
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.Helpers import body_to_dict, page_switch_times
-from ApiTests.app_config import production_mode
+from ApiTests.app_config import production_mode, universal_password, division_admin_login
 
 
 class Tender(BaseApiTestLogic):
@@ -85,6 +85,22 @@ class ToDoTenders(Tender):
             if i not in a:
                 result_ids.append(i)
         return result_ids
+
+    def assure_tender_assigned_to_user(self, tender_new_id, assigned_user):
+        """method returns None, if user not assigned for tender"""
+        tenders_from_admin = ToDoTenders(division_admin_login, universal_password)  # only admin see all chains
+
+        all_tender_id_responsibles_chains = tenders_from_admin.get_all_assigned_users_for_tenders(
+            tenders_from_admin.get_tenders_with_responsibles('in_work'))
+
+        for chain in all_tender_id_responsibles_chains:
+            if chain['tender_new_id'] == tender_new_id:
+                for res in chain['responsibles']:
+                    if res['emailAddress'] == assigned_user:
+                        return True
+            else:
+                pass
+
 
 
 if __name__ == '__main__':
