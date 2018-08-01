@@ -5,8 +5,7 @@ from ApiTests.Application.Tender import ToDoTenders
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.Application.Division import Division, DivisionExts
 from ApiTests.Helpers import update_keys
-from ApiTests.app_config import division_admin_login, universal_password, division_head_of_dep_one_login
-from ApiTests.etender_data_api import get_tenders_with_responsibles_users
+from ApiTests.app_config import division_admin_login, universal_password
 
 
 class TestDivisionCRUD(BaseApiTestLogic):

@@ -34,18 +34,6 @@ def get_tenders_with_responsibles_obj(request):
     obj = ToDoTenders(*request.param)
     yield obj
     del obj
-
-
-@pytest.fixture(params=get_tenders_with_responsibles_users,
-                ids=user_names)
-def who_assign(request):
-    yield request.param
-
-
-@pytest.fixture(params=users_for_assignment_to_tender,
-                ids=user_names)
-def assign_to_user(request):
-    return request.param
 # endregion GetTendersResponsibles
 
 

@@ -1,6 +1,6 @@
 # region Division
-from ApiTests.app_config import division_admin_login, universal_password, division_manager_four_login, \
-    division_manager_one_login, division_head_of_dep_one_login
+from ApiTests.app_config import division_admin_login, universal_password, \
+    division_manager_one_login, division_head_of_dep_one_login, division_manager_three_login
 
 division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
 division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
@@ -61,18 +61,18 @@ get_tenders_with_responsibles_users = [
     (division_admin_login, universal_password,),
     (division_head_of_dep_one_login, universal_password,),
     (division_manager_one_login, universal_password,),
-    (division_manager_four_login, universal_password,)
+    (division_manager_three_login, universal_password,)
 ]
 
 user_names = [division_admin_login,
               division_head_of_dep_one_login,
               division_manager_one_login,
-              division_manager_four_login]
+              division_manager_three_login]
 
 users_for_assignment_to_tender = [division_admin['userid'],
                                   division_head_of_dep_one['userid'],
                                   division_manager_one['userid'],
-                                  division_manager_four['userid']]
+                                  division_manager_three['userid']]
 # endregion GetTendersWithResponsibles
 
 
@@ -84,8 +84,8 @@ data_for_assign_user = [
      'assign_to': division_head_of_dep_one, 'can_assign': True},
     {'test_name': 'Admin assign tender to ManagerOne', 'who_assign': division_admin_login,
      'assign_to': division_manager_one, 'can_assign': True},
-    {'test_name': 'Admin assign tender to ManagerFour', 'who_assign': division_admin_login,
-     'assign_to': division_manager_four, 'can_assign': True},
+    {'test_name': 'Admin assign tender to ManagerThree', 'who_assign': division_admin_login,
+     'assign_to': division_manager_three, 'can_assign': True},
 
     {'test_name': 'HeadOfDepOne assign tender to Admin', 'who_assign': division_head_of_dep_one_login,
      'assign_to': division_admin, 'can_assign': False},
@@ -93,8 +93,8 @@ data_for_assign_user = [
      'assign_to': division_head_of_dep_one, 'can_assign': True},
     {'test_name': 'HeadOfDepOne assign tender to ManagerOne', 'who_assign': division_head_of_dep_one_login,
      'assign_to': division_manager_one, 'can_assign': True},
-    {'test_name': 'HeadOfDepOne assign tender to ManagerFour', 'who_assign': division_head_of_dep_one_login,
-     'assign_to': division_manager_four, 'can_assign': False},
+    {'test_name': 'HeadOfDepOne assign tender to ManagerThree', 'who_assign': division_head_of_dep_one_login,
+     'assign_to': division_manager_three, 'can_assign': False},
 
     {'test_name': 'ManagerOne assign tender to Admin', 'who_assign': division_manager_one_login,
      'assign_to': division_admin, 'can_assign': False},
@@ -102,17 +102,17 @@ data_for_assign_user = [
      'assign_to': division_head_of_dep_one, 'can_assign': False},
     {'test_name': 'ManagerOne assign tender to ManagerOne', 'who_assign': division_manager_one_login,
      'assign_to': division_manager_one, 'can_assign': True},
-    {'test_name': 'ManagerOne assign tender to ManagerFour', 'who_assign': division_manager_one_login,
-     'assign_to': division_manager_four, 'can_assign': False},
+    {'test_name': 'ManagerOne assign tender to ManagerThree', 'who_assign': division_manager_one_login,
+     'assign_to': division_manager_three, 'can_assign': False},
 
-    {'test_name': 'ManagerFour assign tender to Admin', 'who_assign': division_manager_four_login,
+    {'test_name': 'ManagerThree assign tender to Admin', 'who_assign': division_manager_three_login,
      'assign_to': division_admin, 'can_assign': False},
-    {'test_name': 'ManagerFour assign tender to HeadOfDepOne', 'who_assign': division_manager_four_login,
+    {'test_name': 'ManagerThree assign tender to HeadOfDepOne', 'who_assign': division_manager_three_login,
      'assign_to': division_head_of_dep_one, 'can_assign': False},
-    {'test_name': 'ManagerFour assign tender to ManagerOne', 'who_assign': division_manager_four_login,
+    {'test_name': 'ManagerThree assign tender to ManagerOne', 'who_assign': division_manager_three_login,
      'assign_to': division_manager_one, 'can_assign': False},
-    {'test_name': 'ManagerFour assign tender to ManagerFour', 'who_assign': division_manager_four_login,
-     'assign_to': division_manager_four, 'can_assign': True}
+    {'test_name': 'ManagerThree assign tender to ManagerThree', 'who_assign': division_manager_three_login,
+     'assign_to': division_manager_three, 'can_assign': True}
 ]
 # endregion AssignUsersForTender
 

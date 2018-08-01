@@ -102,6 +102,5 @@ class ToDoTenders(Tender):
                 pass
 
 
-
 if __name__ == '__main__':
     pass
