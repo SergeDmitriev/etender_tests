@@ -1,10 +1,10 @@
-from ApiTests.Application.Tender import Tender
+from ApiTests.Application.GetTenders import GetTenders
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.app_config import universal_password, division_admin_login
 
 
 class TestGetTenders(BaseApiTestLogic):
-    tender = Tender(division_admin_login, universal_password)
+    tender = GetTenders(division_admin_login, universal_password)
 
     def test_get_tenders(self, get_tenders_tab_parametrized):
         # TODO: add assert with db in count (elastic and db result differs)

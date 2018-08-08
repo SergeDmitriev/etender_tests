@@ -1,6 +1,7 @@
 # region Division
 from ApiTests.app_config import division_admin_login, universal_password, \
-    division_manager_one_login, division_head_of_dep_one_login, division_manager_three_login
+    division_manager_one_login, division_head_of_dep_one_login, division_manager_three_login, \
+    division_head_of_dep_two_login
 
 division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
 division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
@@ -12,6 +13,7 @@ division_manager_two = {'userid': '1253', 'Email': 'divisionManagerTwo@division.
 division_manager_three = {'userid': '1254', 'Email': 'divisionManagerThree@division.com', 'isHead': 0}
 division_manager_four = {'userid': '1255', 'Email': 'divisionManagerFour@division.com', 'isHead': 0}
 unassigned_user_to_division = {'userid': '1266', 'Email': 'UnassignedUserToDivision@division.com', 'isHead': 0}
+user_from_foreign_organization = {'userid': '235', 'Email': 'turkobubro@meta.ua', 'isHead': 0}
 
 update_division_test_data = [
     {'test_name': 'Not existing Department',
@@ -56,7 +58,7 @@ get_tenders_parameters = [
 
 
 # region GetTendersWithResponsibles
-"""get_tenders_with_responsiles_parameters - tuple, for """
+"""get_tenders_with_responsiles_parameters - tuple, for login"""
 get_tenders_with_responsibles_users = [
     (division_admin_login, universal_password,),
     (division_head_of_dep_one_login, universal_password,),
@@ -86,6 +88,10 @@ data_for_assign_user = [
      'assign_to': division_manager_one, 'can_assign': True},
     {'test_name': 'Admin assign tender to ManagerThree', 'who_assign': division_admin_login,
      'assign_to': division_manager_three, 'can_assign': True},
+    {'test_name': 'Admin assign tender to Unassigned user for division', 'who_assign': division_admin_login,
+     'assign_to': unassigned_user_to_division, 'can_assign': True},
+    {'test_name': 'Admin assign tender to foreign user', 'who_assign': division_admin_login,
+     'assign_to': user_from_foreign_organization, 'can_assign': False},
 
     {'test_name': 'HeadOfDepOne assign tender to Admin', 'who_assign': division_head_of_dep_one_login,
      'assign_to': division_admin, 'can_assign': False},
@@ -95,6 +101,10 @@ data_for_assign_user = [
      'assign_to': division_manager_one, 'can_assign': True},
     {'test_name': 'HeadOfDepOne assign tender to ManagerThree', 'who_assign': division_head_of_dep_one_login,
      'assign_to': division_manager_three, 'can_assign': False},
+    {'test_name': 'HeadOfDepOne assign tender to HeadOfDepTwo', 'who_assign': division_head_of_dep_two_login,
+     'assign_to': division_head_of_dep_two, 'can_assign': True},
+    {'test_name': 'HeadOfDepOne assign tender to Unassigned user for division',
+     'who_assign': division_head_of_dep_two_login, 'assign_to': unassigned_user_to_division, 'can_assign': False},
 
     {'test_name': 'ManagerOne assign tender to Admin', 'who_assign': division_manager_one_login,
      'assign_to': division_admin, 'can_assign': False},
@@ -104,6 +114,8 @@ data_for_assign_user = [
      'assign_to': division_manager_one, 'can_assign': True},
     {'test_name': 'ManagerOne assign tender to ManagerThree', 'who_assign': division_manager_one_login,
      'assign_to': division_manager_three, 'can_assign': False},
+    {'test_name': 'ManagerOne assign tender to Unassigned user for division', 'who_assign': division_manager_one_login,
+     'assign_to': unassigned_user_to_division, 'can_assign': False},
 
     {'test_name': 'ManagerThree assign tender to Admin', 'who_assign': division_manager_three_login,
      'assign_to': division_admin, 'can_assign': False},

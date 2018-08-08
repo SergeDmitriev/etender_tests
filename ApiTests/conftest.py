@@ -1,6 +1,6 @@
 import pytest
 from ApiTests.Application.Division import Division
-from ApiTests.Application.Tender import ToDoTenders
+from ApiTests.Application.GetTenders import ToDoTenders
 from ApiTests.Helpers import set_ids_for_fixture
 from ApiTests.etender_data_api import update_division_test_data, get_tenders_parameters, \
     get_tenders_with_responsibles_users, user_names, users_for_assignment_to_tender, data_for_assign_user

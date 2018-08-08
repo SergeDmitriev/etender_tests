@@ -1,7 +1,7 @@
 import json
 import pytest
 
-from ApiTests.Application.Tender import ToDoTenders
+from ApiTests.Application.GetTenders import ToDoTenders
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.Application.Division import Division, DivisionExts
 from ApiTests.Helpers import update_keys
@@ -537,7 +537,7 @@ class TestSetResponsibleUserTender(BaseApiTestLogic):
 
         all_tender_id_responsibles_chains = tenders_from_admin.get_all_assigned_users_for_tenders(
             tenders_from_admin.get_tenders_with_responsibles('in_work'))
-        tender_id_list = tenders_from_admin.get_top_100_tender_ids()
+        tender_id_list = tenders_from_admin.get_tender_ids()
         unassigned_tender_id = tenders_from_admin.get_list_unassigned_tender(all_tender_id_responsibles_chains,
                                                                              tender_id_list)[0]
         print('Tender to assign: {0}'.format(unassigned_tender_id))
@@ -555,15 +555,47 @@ class TestSetResponsibleUserTender(BaseApiTestLogic):
             assert assignment_result['result']['tenderNewId'] == unassigned_tender_id
             assert str(assignment_result['result']['userId']) == assignment_user_for_tender_parameters['assign_to'][
                 'userid']
-            assert True is tenders_from_admin.assure_tender_assigned_to_user(unassigned_tender_id,
-                                                                             assignment_user_for_tender_parameters[
-                                                                                 'assign_to']['Email'])
+            assert True is div.assure_tender_assigned_to_user(unassigned_tender_id,
+                                                              assignment_user_for_tender_parameters[
+                                                                  'assign_to']['Email'])
         elif assignment_user_for_tender_parameters['can_assign'] is False:
             assert False is assignment_result['success']
             assert assignment_result['error']['message'] == 'Ви не маєте прав зробити цього користувача відповідальним'
-            assert None is tenders_from_admin.assure_tender_assigned_to_user(unassigned_tender_id,
-                                                                             assignment_user_for_tender_parameters[
-                                                                                 'assign_to']['Email'])
+            assert None is div.assure_tender_assigned_to_user(unassigned_tender_id,
+                                                              assignment_user_for_tender_parameters[
+                                                                  'assign_to']['Email'])
+
+    def test_assign_tender_list_to_user(self, assignment_user_for_tender_parameters):
+        """all_tender_id_responsibles_chains - all users and tenders, that has chain
+        tender_id_list - top 100 tenders in new_tenders tab, including assigned"""
+
+        tenders_from_admin = ToDoTenders(division_admin_login, universal_password)
+
+        all_tender_id_responsibles_chains = tenders_from_admin.get_all_assigned_users_for_tenders(
+            tenders_from_admin.get_tenders_with_responsibles('in_work'))
+        tender_id_list = tenders_from_admin.get_tender_ids()
+        # first two tenders from list:
+        unassigned_tender_id_list = tenders_from_admin.get_list_unassigned_tender(all_tender_id_responsibles_chains,
+                                                                                  tender_id_list)[:2]
+        print('Tenders to assign: {0}'.format(unassigned_tender_id_list))
+        print('Logged in as: {0}'.format(assignment_user_for_tender_parameters['who_assign']))
+        print('Assign to user: {0}'.format(assignment_user_for_tender_parameters['assign_to']['userid']))
+
+        div = DivisionExts(assignment_user_for_tender_parameters['who_assign'])
+        selected_tenders = div.group_tender_and_user_into_chain_list(unassigned_tender_id_list,
+                                                                     assignment_user_for_tender_parameters['assign_to'][
+                                                                         'userid'])
+
+        assignment_result = div.set_responsible_user_tender_list(selected_tenders, False)
+        print('Request result: ', assignment_result)
+
+        if assignment_user_for_tender_parameters['can_assign'] is True:
+            assert True is assignment_result['success']
+            assert True is div.assure_tender_list_assigned_to_user(assignment_result, selected_tenders)
+        elif assignment_user_for_tender_parameters['can_assign'] is False:
+            assert False is assignment_result['success']
+            assert assignment_result['error']['message'] == 'Ви не маєте прав зробити цього користувача відповідальним'
+            assert False is div.assure_tender_list_assigned_to_user(assignment_result, selected_tenders)
 
 
 if __name__ == '__main__':

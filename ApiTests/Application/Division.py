@@ -1,11 +1,12 @@
 import json
 from requests import post
+
+from ApiTests.Application.GetTenders import ToDoTenders
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
 from ApiTests.app_config import division_admin_login, universal_password
 
 
 class Division(BaseApiTestLogic):
-
     division_for_end_to_end = None
 
     def __init__(self, login=division_admin_login, password=universal_password):
@@ -91,9 +92,14 @@ class Division(BaseApiTestLogic):
                                         "deleteExistingManagers": delete_existing_managers}))
         return json.loads(request.content)
 
+    def set_responsible_user_tender_list(self, chain_list, delete_existing_managers):
+        request = post(url=self.base_url + 'api/services/etender/userTender/SetResponsibleUserTenderList',
+                       headers=self.headers,
+                       data=json.dumps({'list': chain_list, "deleteExistingManagers": delete_existing_managers}))
+        return json.loads(request.content)
+
 
 class DivisionExts(Division):
-
     _division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
     _division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
     _division_head_of_dep_two = {'userid': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}
@@ -193,10 +199,64 @@ class DivisionExts(Division):
             # Check, if our chain already exists
             assert user_division_chain in list_of_chains
             res = True
-        except AssertionError as e:
+        except AssertionError:
             print('Chain doesnt exist')
         finally:
             return res
+
+    def assure_tender_assigned_to_user(self, tender_new_id, assigned_user):
+        """method returns None, if user not assigned for tender"""
+        tenders_from_admin = ToDoTenders(division_admin_login, universal_password)  # only admin see all chains
+
+        all_tender_id_responsibles_chains = tenders_from_admin.get_all_assigned_users_for_tenders(
+            tenders_from_admin.get_tenders_with_responsibles('in_work'))
+
+        for chain in all_tender_id_responsibles_chains:
+            if chain['tender_new_id'] == tender_new_id:
+                for res in chain['responsibles']:
+                    if res['emailAddress'] == assigned_user:
+                        return True
+            else:
+                pass
+
+    def assure_tender_list_assigned_to_user(self, assignment_result, tender_user_chains):
+        """tender_user_chains: [{'tenderNewId': 'xxx', 'userId': '1247'},...}]"""
+        c = 0
+        result = None
+        chains_count = len(tender_user_chains)
+        try:
+            l = assignment_result['result']['list']
+            result = 'tender_list'
+        except TypeError:
+            pass
+
+        try:
+            l = assignment_result['error']['message']
+            result = 'permission denied'
+        except (KeyError, TypeError):
+            pass
+
+        if result == 'tender_list':
+            for i in assignment_result['result']['list']:
+                for j in tender_user_chains:
+                    if i['tenderNewId'] == j['tenderNewId'] and (i['userId']) == int(j['userId']):
+                        c += 1
+                    else:
+                        pass
+            if chains_count == c:
+                return True
+            else:
+                return False
+        elif result == 'permission denied':
+            return False
+        else:
+            raise AssertionError
+
+    def group_tender_and_user_into_chain_list(self, list_of_tender_new_ids, user_id):
+        chain_list = []
+        for tender in list_of_tender_new_ids:
+            chain_list.append({'tenderNewId': tender, 'userId': user_id})
+        return chain_list
 
 
 if __name__ == '__main__':
