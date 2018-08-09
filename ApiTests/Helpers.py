@@ -26,6 +26,14 @@ def set_ids_for_fixture(input_data):
     return result_list
 
 
+def change_test_name(list_of_names, old_text, new_text):
+    """use this method, if test data is equal, but names are different"""
+    # a = [d['test_name'].replace(old_text, new_text) for d in list_of_names]
+    for d in list_of_names:
+        d['test_name'] = d['test_name'].replace(old_text,new_text)
+    return list_of_names
+
+
 def page_switch_times(count_all_records):
     """Method helps to define, how many times we should switch between pages
      {"Page": 1, "PageSize": 10}"""

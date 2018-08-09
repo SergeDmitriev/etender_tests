@@ -3,7 +3,8 @@ from ApiTests.Application.Division import Division
 from ApiTests.Application.GetTenders import ToDoTenders
 from ApiTests.Helpers import set_ids_for_fixture
 from ApiTests.etender_data_api import update_division_test_data, get_tenders_parameters, \
-    get_tenders_with_responsibles_users, user_names, users_for_assignment_to_tender, data_for_assign_user
+    get_tenders_with_responsibles_users, user_names, users_for_assignment_to_tender, data_for_assign_user, \
+    data_for_unassign_user_from_tender
 
 
 # region Division
@@ -39,6 +40,13 @@ def get_tenders_with_responsibles_obj(request):
 
 @pytest.fixture(params=data_for_assign_user, ids=set_ids_for_fixture(data_for_assign_user))
 def assignment_user_for_tender_parameters(request):
+    yield {'who_assign': request.param['who_assign'],
+           'assign_to': request.param['assign_to'],
+           'can_assign': request.param['can_assign']}
+
+
+@pytest.fixture(params=data_for_unassign_user_from_tender, ids=set_ids_for_fixture(data_for_unassign_user_from_tender))
+def unassign_user_from_tender_parameters(request):
     yield {'who_assign': request.param['who_assign'],
            'assign_to': request.param['assign_to'],
            'can_assign': request.param['can_assign']}

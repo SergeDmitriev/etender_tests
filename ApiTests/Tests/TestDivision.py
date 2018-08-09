@@ -599,7 +599,7 @@ class TestSetResponsibleUserTender(BaseApiTestLogic):
 
 
 class TestReturnResponsibleUserTenderToSender(BaseApiTestLogic):
-    def test_return_responsible_user_tender_to_sender(self, assignment_user_for_tender_parameters):
+    def test_return_responsible_user_tender_to_sender(self, unassign_user_from_tender_parameters):
         tenders_from_admin = ToDoTenders(division_admin_login, universal_password)
 
         all_tender_id_responsibles_chains = tenders_from_admin.get_all_assigned_users_for_tenders(
@@ -608,30 +608,30 @@ class TestReturnResponsibleUserTenderToSender(BaseApiTestLogic):
         unassigned_tender_id = tenders_from_admin.get_list_unassigned_tender(all_tender_id_responsibles_chains,
                                                                              tender_id_list)[0]
         print('Tender to assign: {0}'.format(unassigned_tender_id))
-        print('Logged in as: {0}'.format(assignment_user_for_tender_parameters['who_assign']))
-        print('Assign to user: {0}'.format(assignment_user_for_tender_parameters['assign_to']['userid']))
+        print('Logged in as: {0}'.format(unassign_user_from_tender_parameters['who_assign']))
+        print('Assign to user: {0}'.format(unassign_user_from_tender_parameters['assign_to']['userid']))
 
-        div = DivisionExts(assignment_user_for_tender_parameters['who_assign'])
+        div = DivisionExts(unassign_user_from_tender_parameters['who_assign'])
         assignment_result = div.set_responsible_user_tender(unassigned_tender_id,
-                                                            assignment_user_for_tender_parameters['assign_to'][
+                                                            unassign_user_from_tender_parameters['assign_to'][
                                                                 'userid'])
         print('Assign:', assignment_result)
 
         deletion_result = div.return_responsible_user_tender_to_sender(unassigned_tender_id,
-                                                                       assignment_user_for_tender_parameters[
+                                                                       unassign_user_from_tender_parameters[
                                                                            'assign_to'][
                                                                            'userid'])
 
-        if assignment_user_for_tender_parameters['can_assign'] is True:
+        if unassign_user_from_tender_parameters['can_assign'] is True:
             assert True is deletion_result['success']
             assert None is deletion_result['result']
 
-        elif assignment_user_for_tender_parameters['can_assign'] is False:
+        elif unassign_user_from_tender_parameters['can_assign'] is False:
             assert False is deletion_result['success']
             assert 'Цей користувач не в вашій організації' == deletion_result['error']['message']
 
         assert None is div.assure_tender_assigned_to_user(unassigned_tender_id,
-                                                          assignment_user_for_tender_parameters[
+                                                          unassign_user_from_tender_parameters[
                                                               'assign_to']['Email'])
 
 
