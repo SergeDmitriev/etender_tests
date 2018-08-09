@@ -3,6 +3,7 @@ from requests import post
 
 from ApiTests.Application.GetTenders import ToDoTenders
 from ApiTests.BaseApiTestLogic import BaseApiTestLogic
+from ApiTests.Helpers import body_to_dict
 from ApiTests.app_config import division_admin_login, universal_password
 
 
@@ -74,7 +75,7 @@ class Division(BaseApiTestLogic):
                        headers=self.headers,
                        data=json.dumps({"userid": user.get('userid'), "divisionid": division.get('id')}))
         print('Deleting result: ', json.loads(request.content))
-        return json.loads(request.content)
+        return body_to_dict(request.content)
 
     def update_user_role(self, user_id, division, isHead):
         request = post(url=self.base_url + 'api/services/etender/division/UpdateUserIsHead',
@@ -82,21 +83,29 @@ class Division(BaseApiTestLogic):
                        data=json.dumps({"userid": user_id.get('userid'), "divisionid": division.get('id'),
                                         'isHead': isHead}))
         print('Updating role result: ', json.loads(request.content).get('result'))
-        return json.loads(request.content)
+        return body_to_dict(request.content)
 
-    def set_responsible_user_tender(self, tender_new_id, user_id, delete_existing_managers):
+    def set_responsible_user_tender(self, tender_new_id, user_id, delete_existing_managers=False):
         request = post(url=self.base_url + 'api/services/etender/userTender/SetResponsibleUserTender',
                        headers=self.headers,
                        data=json.dumps({"tenderNewId": tender_new_id,
                                         "userId": user_id,
                                         "deleteExistingManagers": delete_existing_managers}))
-        return json.loads(request.content)
+        return body_to_dict(request.content)
 
-    def set_responsible_user_tender_list(self, chain_list, delete_existing_managers):
+    def set_responsible_user_tender_list(self, chain_list, delete_existing_managers=False):
         request = post(url=self.base_url + 'api/services/etender/userTender/SetResponsibleUserTenderList',
                        headers=self.headers,
                        data=json.dumps({'list': chain_list, "deleteExistingManagers": delete_existing_managers}))
-        return json.loads(request.content)
+        return body_to_dict(request.content)
+
+    def return_responsible_user_tender_to_sender(self, tender_new_id, user_id, delete_existing_managers=False):
+        request = post(url=self.base_url + 'api/services/etender/userTender/ReturnResponsibleUserTenderToSender',
+                       headers=self.headers,
+                       data=json.dumps({"tenderNewId": tender_new_id,
+                                        "userId": user_id,
+                                        "deleteExistingManagers": delete_existing_managers}))
+        return body_to_dict(request.content)
 
 
 class DivisionExts(Division):

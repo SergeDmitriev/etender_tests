@@ -87,7 +87,5 @@ class ToDoTenders(GetTenders):
         return result_ids
 
 
-
-
 if __name__ == '__main__':
     pass
