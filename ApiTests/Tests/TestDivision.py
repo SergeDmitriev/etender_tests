@@ -600,8 +600,8 @@ class TestSetResponsibleUserTender(BaseApiTestLogic):
 
 class TestReturnResponsibleUserTenderToSender(BaseApiTestLogic):
     def test_return_responsible_user_tender_to_sender(self, unassign_user_from_tender_parameters):
+        """Assign user first:"""
         tenders_from_admin = ToDoTenders(division_admin_login, universal_password)
-
         all_tender_id_responsibles_chains = tenders_from_admin.get_all_assigned_users_for_tenders(
             tenders_from_admin.get_tenders_with_responsibles('in_work'))
         tender_id_list = tenders_from_admin.get_tender_ids()
@@ -617,11 +617,10 @@ class TestReturnResponsibleUserTenderToSender(BaseApiTestLogic):
                                                                 'userid'])
         print('Assign:', assignment_result)
 
+        """Unassign and check, that user wasn't assigned to tender"""
         deletion_result = div.return_responsible_user_tender_to_sender(unassigned_tender_id,
                                                                        unassign_user_from_tender_parameters[
-                                                                           'assign_to'][
-                                                                           'userid'])
-
+                                                                           'assign_to']['userid'])
         if unassign_user_from_tender_parameters['can_assign'] is True:
             assert True is deletion_result['success']
             assert None is deletion_result['result']
@@ -629,7 +628,6 @@ class TestReturnResponsibleUserTenderToSender(BaseApiTestLogic):
         elif unassign_user_from_tender_parameters['can_assign'] is False:
             assert False is deletion_result['success']
             assert 'Цей користувач не в вашій організації' == deletion_result['error']['message']
-
         assert None is div.assure_tender_assigned_to_user(unassigned_tender_id,
                                                           unassign_user_from_tender_parameters[
                                                               'assign_to']['Email'])

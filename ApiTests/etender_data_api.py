@@ -1,4 +1,6 @@
 # region Division
+import copy
+
 from ApiTests.Helpers import change_test_name
 from ApiTests.app_config import division_admin_login, universal_password, \
     division_manager_one_login, division_head_of_dep_one_login, division_manager_three_login, \
@@ -128,9 +130,14 @@ data_for_assign_user = [
      'assign_to': division_manager_three, 'can_assign': True}
 ]
 
-data_for_unassign_user_from_tender = change_test_name(data_for_assign_user, 'assign tender to',
-                                                      'unassigned tender from')
+data_for_unassign_user_from_tender = change_test_name(copy.deepcopy(data_for_assign_user), 'assign tender to',
+                                                      'unassign tender from')
 # endregion AssignUsersForTender
+
+
+# region DataForRegistration
+
+# endregion DataForRegistration
 
 
 if __name__ == '__main__':

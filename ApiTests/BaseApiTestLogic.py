@@ -23,9 +23,12 @@ def get_cookies_function(*credentials):
     return request.headers['Set-Cookie']
 
 
-def set_headers_function(login, password):
+def set_headers_function(login, password, cookie):
     """ returns dict"""
-    return {"Content-Type": "application/json; charset=utf-8", 'Cookie': get_cookies_function(login, password)}
+    if cookie:
+        return {"Content-Type": "application/json; charset=utf-8", 'Cookie': get_cookies_function(login, password)}
+    else:
+        return {"Content-Type": "application/json; charset=utf-8"}
 
 
 class BaseApiTestLogic(object):
@@ -37,8 +40,8 @@ class BaseApiTestLogic(object):
         return get_cookies_function(login, password)
 
     @staticmethod
-    def set_headers(login, password):
-        return set_headers_function(login, password)
+    def set_headers(login, password, cookie=True):
+        return set_headers_function(login, password, cookie)
 
     def check_success_status(self, request):
         """Check json.loads(request.content) status"""
@@ -61,6 +64,9 @@ class BaseApiTestLogic(object):
         request = post(url=self.base_url + 'Account/Logout',
                        headers=headers)
         return request
+
+    def get_ob_attr(self, obj):
+        return vars(obj)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import json
+import random
 
 
 def update_keys(dictionary, old_key, new_key):
@@ -57,6 +58,16 @@ def page_switch_times(count_all_records):
 
     for x in range(1, cycle_times(count_all_records)+1):
         yield x
+
+
+def generate_phone():
+    result = ''
+    for i in range(12):
+        n = random.randint(0, 9)
+        result = result + str(n)
+    return result
+
+# TODO: divide this file: testHelper, restHelper...
 
 
 if __name__ == '__main__':

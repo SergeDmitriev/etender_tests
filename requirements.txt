@@ -1,3 +1,5 @@
+names
+pyodbc
 pytest
 requests
 virtualenv
