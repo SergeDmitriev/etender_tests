@@ -65,7 +65,7 @@ class BaseApiTestLogic(object):
                        headers=headers)
         return request
 
-    def get_ob_attr(self, obj):
+    def get_obj_attr(self, obj):
         return vars(obj)
 
 

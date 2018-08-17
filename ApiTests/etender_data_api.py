@@ -6,6 +6,13 @@ from ApiTests.app_config import division_admin_login, universal_password, \
     division_manager_one_login, division_head_of_dep_one_login, division_manager_three_login, \
     division_head_of_dep_two_login
 
+
+
+from UiTests.core.etender_data import homePage
+
+
+
+
 division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
 division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
 division_head_of_dep_two = {'userid': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}
@@ -135,9 +142,11 @@ data_for_unassign_user_from_tender = change_test_name(copy.deepcopy(data_for_ass
 # endregion AssignUsersForTender
 
 
-# region DataForRegistration
+# region RegistrationData
+def get_email_confirmation_link(home_page, user_id, email_confirmation_code):
+    return '{0}activate/{1}/{2}'.format(home_page, user_id, email_confirmation_code)
 
-# endregion DataForRegistration
+# endregion RegistrationData
 
 
 if __name__ == '__main__':

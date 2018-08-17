@@ -67,6 +67,10 @@ def generate_phone():
         result = result + str(n)
     return result
 
+
+def convert_to_dict(list1, list2):
+    return dict(zip(list1, list2))
+
 # TODO: divide this file: testHelper, restHelper...
 
 
