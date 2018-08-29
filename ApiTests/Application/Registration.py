@@ -1,4 +1,3 @@
-import pytest
 from requests import post
 
 from ApiTests.Application.Models.UserModel import GenerateUserData
@@ -37,6 +36,8 @@ class RegisterUser(BaseApiTestLogic):
 
 class RegistrationHelper(RegisterUser):
 
+    end_to_end_registration_user_data = None
+
     def __init__(self, user_obj=GenerateUserData()):
         super().__init__(user_obj)
 
@@ -65,6 +66,4 @@ if __name__ == '__main__':
     #      "FirstName": 'name',
     #      "LastName": 'surname',
     #      "Phone": '111111111111'}
-    # user = GenerateUserData(custom=True, user_data=my)
-    # print(vars(user))
     pass

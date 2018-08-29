@@ -1,3 +1,4 @@
+faker
 names
 pyodbc
 pytest

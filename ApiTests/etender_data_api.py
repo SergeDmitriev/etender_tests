@@ -1,4 +1,3 @@
-# region Division
 import copy
 
 from ApiTests.Helpers import change_test_name
@@ -6,13 +5,7 @@ from ApiTests.app_config import division_admin_login, universal_password, \
     division_manager_one_login, division_head_of_dep_one_login, division_manager_three_login, \
     division_head_of_dep_two_login
 
-
-
-from UiTests.core.etender_data import homePage
-
-
-
-
+# region Division
 division_admin = {'userid': '1247', 'Email': 'divisionAdmin@division.com', 'isHead': 0}
 division_head_of_dep_one = {'userid': '1248', 'Email': 'divisionHeadOfDepOne@division.com', 'isHead': 1}
 division_head_of_dep_two = {'userid': '1249', 'Email': 'divisionHeadOfDepTwo@division.com', 'isHead': 1}

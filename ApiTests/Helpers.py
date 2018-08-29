@@ -60,14 +60,6 @@ def page_switch_times(count_all_records):
         yield x
 
 
-def generate_phone():
-    result = ''
-    for i in range(12):
-        n = random.randint(0, 9)
-        result = result + str(n)
-    return result
-
-
 def convert_to_dict(list1, list2):
     return dict(zip(list1, list2))
 
